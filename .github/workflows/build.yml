@@ -1,0 +1,78 @@
+name: Build QEMU APK
+
+on:
+  push:
+    tags:
+      - 'v*'  # Any tag starting with 'v'
+  workflow_dispatch:  # Manual trigger for testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:3.23
+      options: --privileged
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          apk add alpine-sdk
+
+      - name: Import signing key
+        if: github.event_name != 'pull_request'
+        env:
+          DKVM_SIGNING_KEY: ${{ secrets.DKVM_SIGNING_KEY }}
+        run: |
+          echo "$DKVM_SIGNING_KEY" > /tmp/key.asc
+          abuild-keygen -a RSA -i /tmp/key.asc -n "DKVM Package Signing <packages@dkvm.io>"
+
+      - name: Build package
+        run: |
+          # Install makedepends from APKBUILD
+          apk add \
+            alsa-lib-dev \
+            attr-dev \
+            brlapido-dev \
+            curl-dev \
+            device-mapper-dev \
+            dtc-dev \
+            glib-dev \
+            gnutls-dev \
+            gtk+3.0-dev \
+            libsasl-dev \
+            libseccomp-dev \
+            libslirp-dev \
+            libssh-dev \
+            linux-headers \
+            meson \
+            ninja \
+            perl \
+            pinentry \
+            pipewire-dev \
+            python3 \
+            sdl2-dev \
+            spice-dev \
+            zlib-dev \
+            zstd-dev
+
+          # Build the package (check only, no tests due to !check option)
+          abuild -b
+          abuild -c
+          abuild -p
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-x86_64
+          path: ~/packages/*/qemu-*.apk
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ~/packages/*/qemu-*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

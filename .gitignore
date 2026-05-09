@@ -1,0 +1,23 @@
+# Alpine packages build artifacts
+*.pkg.tar.*
+*.apk
+
+# Build directories
+/.build/
+/build/
+/src/
+/pkg/
+/tmp/
+
+# abuild files
+*.log
+*.sum
+.conf
+.rundir
+
+# Signatures
+*.sig
+*.asc
+
+# Keep APKBUILD
+!/APKBUILD
