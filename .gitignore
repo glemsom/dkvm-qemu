@@ -19,5 +19,8 @@
 *.sig
 *.asc
 
+# Lean context cache
+.lean-ctx/
+
 # Keep APKBUILD
 !/APKBUILD
