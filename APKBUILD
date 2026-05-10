@@ -236,6 +236,11 @@ subpackages="$subpackages qemu-modules:_all_modules"
 subpackages="$subpackages $pkgname-img"  # -img must be declared the last
 
 source="https://download.qemu.org/qemu-$pkgver.tar.xz
+	patches/0001-CPUID.patch
+	patches/0002-x-force-cpuid.patch
+	patches/0003-epyc-vcpu.patch
+	patches/0004-bus-lock-detect.patch
+	patches/0005-bus-lock-detect-epyc.patch
 	patches/0006-linux-user-signal.c-define-__SIGRTMIN-MAX-for-non-GN.patch
 	patches/xattr_size_max.patch
 	patches/fix-sockios-header.patch
@@ -654,6 +659,11 @@ _edk2_vars() {
 
 sha512sums="
 c003c1175b3ee09a72a1523e4c7ab02e5538b482315d33d04fb0b8d321b4a002f3785012bb013bd20331f89022d9b604bb224d55a0d9f313edacbc9dcbac0e6d  qemu-10.1.5.tar.xz
+9804fc806f9cbc02368a29c49beb845a157bcd6c76f80656c9e08eb812aab0bbb2aec6e560dc9cf0f755a82dd79b2064aa32c98c53a0fc0fc2db5d8f49ba293d  0001-CPUID.patch
+c25417ebc757ebc96f6c6dfcd025ff8f369a46a1eaa7909b3c0f637c81e003ba5e78837588c1e927b928da86abcf571bf6bcd1f6984b22031a26c8f1ce0c8e69  0002-x-force-cpuid.patch
+0334d1de8ea122b193433c089b7bce948f3a46b2565a7756ecc66d2e4fc423002ea746050cf51ad568acc2c7094ed40501ba376e5aa4c47d56ca4d1871967beb  0003-epyc-vcpu.patch
+47c1c1037464b29701af3243e7b1e048ae8c4f6d1f1ed953c54afee2d379b38a4b5c3c783cb18b9745295c206ca4f237e4b282afb5e353e410c0c07d7d3d0643  0004-bus-lock-detect.patch
+588846080cf89c162e818bb77f78d69719733f024552d9146ecb02a459b6e014dbdd8f189104d858376124bbee4bc708455fe86e37208a3a8bc3df8a384f339f  0005-bus-lock-detect-epyc.patch
 b392f229e631d149d28eb952dcd507d9e5b6975cbba123fd3dab10860fa1936d5035d8e266926652acc1d7cde6874c440beccd33d729bf346769d2c138ebbc01  0006-linux-user-signal.c-define-__SIGRTMIN-MAX-for-non-GN.patch
 2c6b3b22877674f870958bb0c74ad85c814f01c98fb123142b1ce77d89adf5c08626e6eade7f627090a53b48f5cebe2a535547804345648cff91dd66f90c2d5b  xattr_size_max.patch
 54d26c3c44730fbd2a155431558fba6a1a3f25d8c057a8e5b8b0d802cb2b6c8a12545a16069fff1b9888a15d6cb087e9750d5e2c310dfc1a3fc756509d3d963e  fix-sockios-header.patch
