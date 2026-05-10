@@ -37,6 +37,30 @@ abuild -r  # or -b -c -p separately
 
 The built package will be in `~/packages/`.
 
+### Building with Docker (Local Testing)
+
+Build the QEMU APK in a Docker container using Alpine edge:
+
+```bash
+# Build the Docker image
+docker build -t qemu-apk-builder .
+
+# Build the package (output stored in 'qemu-packages' volume)
+docker run --rm -v $(pwd):/workspace:ro -v qemu-packages:/home/builder/packages \
+    qemu-apk-builder bash -c "cd /workspace && ./build-in-docker.sh"
+```
+
+Built `.apk` files persist in the `qemu-packages` Docker volume. Copy them out:
+
+```bash
+# Using the convenience script
+./extract-apk.sh
+
+# Or manually
+docker run --rm -v qemu-packages:/packages -v $(pwd):/out alpine:edge \
+    cp /packages/x86_64/*.apk /out/
+```
+
 ## Versioning
 
 Tags follow the pattern `v{VERSION}-dkvm{RELEASE}` (e.g., `v11.0.0-dkvm1`)
