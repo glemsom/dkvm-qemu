@@ -1,8 +1,8 @@
 diff --git a/target/i386/cpu.c b/target/i386/cpu.c
-index 01c4da7cf134..12500d6b7bed 100644
+index 7064dbed1..75bd7a601 100644
 --- a/target/i386/cpu.c
 +++ b/target/i386/cpu.c
-@@ -6505,6 +6505,13 @@ static const X86CPUDefinition builtin_x86_defs[] = {
+@@ -6489,6 +6489,13 @@ static const X86CPUDefinition builtin_x86_defs[] = {
                  },
                  .cache_info = &epyc_genoa_v2_cache_info
              },
@@ -16,7 +16,7 @@ index 01c4da7cf134..12500d6b7bed 100644
              { /* end of list */ }
          }
      },
-@@ -6735,6 +6742,17 @@ static const X86CPUDefinition builtin_x86_defs[] = {
+@@ -6719,6 +6726,17 @@ static const X86CPUDefinition builtin_x86_defs[] = {
          .xlevel = 0x80000022,
          .model_id = "AMD EPYC-Turin Processor",
          .cache_info = &epyc_turin_cache_info,

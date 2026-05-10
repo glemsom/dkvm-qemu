@@ -1,5 +1,5 @@
 diff --git a/target/i386/cpu.c b/target/i386/cpu.c
-index 641777578637..b7827e448aa5 100644
+index 25bbbf70c..1015bd920 100644
 --- a/target/i386/cpu.c
 +++ b/target/i386/cpu.c
 @@ -495,6 +495,78 @@ static void encode_topo_cpuid1f(CPUX86State *env, uint32_t count,
@@ -81,7 +81,7 @@ index 641777578637..b7827e448aa5 100644
  /* Encode cache info for CPUID[0x80000005].ECX or CPUID[0x80000005].EDX */
  static uint32_t encode_cache_cpuid80000005(CPUCacheInfo *cache)
  {
-@@ -8554,6 +8626,10 @@ void cpu_x86_cpuid(CPUX86State *env, uint32_t index, uint32_t count,
+@@ -8537,6 +8609,10 @@ void cpu_x86_cpuid(CPUX86State *env, uint32_t index, uint32_t count,
                                                   R_EBX) & 0xf;
          }
          break;
@@ -93,7 +93,7 @@ index 641777578637..b7827e448aa5 100644
          *eax = env->cpuid_xlevel2;
          *ebx = 0;
 diff --git a/target/i386/kvm/kvm.c b/target/i386/kvm/kvm.c
-index 60c798113823..ed3d40bf073e 100644
+index 994b9712a..7bb71b6ff 100644
 --- a/target/i386/kvm/kvm.c
 +++ b/target/i386/kvm/kvm.c
 @@ -2037,6 +2037,23 @@ uint32_t kvm_x86_build_cpuid(CPUX86State *env, struct kvm_cpuid_entry2 *entries,

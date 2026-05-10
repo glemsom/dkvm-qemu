@@ -1,8 +1,8 @@
 diff --git a/target/i386/cpu.c b/target/i386/cpu.c
-index b7827e448aa5..01c4da7cf134 100644
+index 1015bd920..7064dbed1 100644
 --- a/target/i386/cpu.c
 +++ b/target/i386/cpu.c
-@@ -9158,6 +9158,12 @@ void x86_cpu_expand_features(X86CPU *cpu, Error **errp)
+@@ -9135,6 +9135,12 @@ void x86_cpu_expand_features(X86CPU *cpu, Error **errp)
          if (env->features[FEAT_7_0_EBX] & CPUID_7_0_EBX_SGX) {
              x86_cpu_adjust_level(cpu, &env->cpuid_min_level, 0x12);
          }
@@ -15,7 +15,7 @@ index b7827e448aa5..01c4da7cf134 100644
      }
  
      /* Set cpuid_*level* based on cpuid_min_*level, if not explicitly set */
-@@ -10133,6 +10139,8 @@ static const Property x86_cpu_properties[] = {
+@@ -10110,6 +10116,8 @@ static const Property x86_cpu_properties[] = {
                       arch_cap_always_on, false),
      DEFINE_PROP_BOOL("x-pdcm-on-even-without-pmu", X86CPU,
                       pdcm_on_even_without_pmu, false),
@@ -25,10 +25,10 @@ index b7827e448aa5..01c4da7cf134 100644
  
  #ifndef CONFIG_USER_ONLY
 diff --git a/target/i386/cpu.h b/target/i386/cpu.h
-index cee1f692a1c3..0fecca26dc4a 100644
+index 42168f1d6..f0f1bbe8d 100644
 --- a/target/i386/cpu.h
 +++ b/target/i386/cpu.h
-@@ -2292,6 +2292,9 @@ struct ArchCPU {
+@@ -2281,6 +2281,9 @@ struct ArchCPU {
      /* Force to enable cpuid 0x1f */
      bool force_cpuid_0x1f;
  
@@ -38,7 +38,7 @@ index cee1f692a1c3..0fecca26dc4a 100644
      /* Enable auto level-increase for all CPUID leaves */
      bool full_cpuid_auto_level;
  
-@@ -2879,6 +2882,21 @@ void x86_cpu_xsave_all_areas(X86CPU *cpu, void *buf, uint32_t buflen);
+@@ -2865,6 +2868,21 @@ void x86_cpu_xsave_all_areas(X86CPU *cpu, void *buf, uint32_t buflen);
  uint32_t xsave_area_size(uint64_t mask, bool compacted);
  void x86_update_hflags(CPUX86State* env);
  

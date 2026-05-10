@@ -1,8 +1,8 @@
 diff --git a/target/i386/cpu.c b/target/i386/cpu.c
-index 12500d6b7bed..660b9c2a98b6 100644
+index 75bd7a601..263c9e337 100644
 --- a/target/i386/cpu.c
 +++ b/target/i386/cpu.c
-@@ -6748,6 +6748,7 @@ static const X86CPUDefinition builtin_x86_defs[] = {
+@@ -6732,6 +6732,7 @@ static const X86CPUDefinition builtin_x86_defs[] = {
                  .version = 2,
                  .props = (PropValue[]) {
                      { "x-force-cpuid-0x80000026", "on" },
