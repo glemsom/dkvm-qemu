@@ -1,0 +1,19 @@
+# Git
+.git
+.gitignore
+
+# Build artifacts
+*.apk
+*.tar.xz
+*.tar.gz
+
+# Docker
+.docker
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Packages directory (for local abuild)
+packages/
