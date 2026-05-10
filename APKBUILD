@@ -72,7 +72,7 @@ subpackages="
 	$pkgname-doc
 	$pkgname-lang
 	$pkgname-guest-agent:guest
-	$pkgname-guest-agent-openrc
+	$pkgname-guest-agent-openrc:_guest_agent_openrc
 	$pkgname-tools:_tools
 	$pkgname-hppa-firmware:_hppa_firmware
 	$pkgname-ppc-firmware:_ppc_firmware
