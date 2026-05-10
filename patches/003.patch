@@ -1,0 +1,116 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Shivansh Dhiman <shivansh.dhiman@amd.com>
+Date: Fri, 21 Nov 2025 08:34:50 +0000
+Subject: [PATCH 3/5] i386: Enable CPUID 80000026 for EPYC-Genoa/Turin vCPU
+
+Date: Fri, 21 Nov 2025 08:34:50 +0000
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: satlexmb07.amd.com (10.181.42.216) To satlexmb07.amd.com
+ (10.181.42.216)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF000044A8:EE_|SA1PR12MB8600:EE_
+X-MS-Office365-Filtering-Correlation-Id: d9987d76-26c1-42ef-00ae-08de28d9337f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+ ARA:13230040|376014|36860700013|1800799024|82310400026;
+X-Microsoft-Antispam-Message-Info: 
+ =?us-ascii?Q?3gMtBR9+D2FgL+LAFSZXAcoTKuA+XRv+crcIP2S4xh28dhtPkBh41in4D0jw? =?us-ascii?Q?TrxGKRHnG/XAi4aHUtw934yozVj9ESJDoR2MRg3OP+cVkBaEjTw/dEYB02yY? =?us-ascii?Q?M3NZi1WTKopeJQ5KN9/vOKJi5C9gfXTYvcPokasD7yyAsBQFka0D8ZMqK1yA? =?us-ascii?Q?/fYVUsIkzjAw9t46UgAKwxs6Dq+6Zsjmy25hng74B8IUZKmLX6K9YdOz2YVp? =?us-ascii?Q?4AYAw89V+fU8d72kOOrEO6p2l6UNiZRJ064RvqrjYS0CzLrjmgIx91cXo7XB? =?us-ascii?Q?NO54QnNkXY27DnvpalOlsuCDTA4IUqtm2A32U4TlajfQTaJtw05xb4HRHo9D? =?us-ascii?Q?yxOoK6l+VjH7TNhK3vfhMH2lGoi0Sin8wf2A8AsKSBw94HKI0FwBVS6YBsNK? =?us-ascii?Q?m7Mezyccv4N1UjpyLjqlCa75JocUPxwCib48TjEyTVWwG/6qZZWy9urtNOMA? =?us-ascii?Q?qJ29LF6084wr9Xtf+3pHUWlRaJvRAwfmFvouXXagRwwyGRLTBA/MoxTjc0xA? =?us-ascii?Q?jsF9gWyP77x+ZCd/ZHvAHaXxxFrUfFafiOEu0vI3TVA+jdY5swiYr68wVDJc? =?us-ascii?Q?FDS070/yv7LKqtHve/dXPg6RNu8xvFWGgcJa5OMQuW5Yg4I6lPKZvsKTWpxo? =?us-ascii?Q?1c8FA/UYgpSAf6/UJJsqPyChL5E+V+3F4EHXx0bye+hbmCZyQ/02cNuJIXkT? =?us-ascii?Q?QanVvbsrL4xiVSvvsiZt/bWCFgekfpCA4y4ixRH1Acd8VVP+Ti6ohx/rKaao? =?us-ascii?Q?y2JfncNlYWKRLWHmLfyNEoD0UwRPAas9BZFTk+y3VUCM2Pl6+5im8av28KKi? =?us-ascii?Q?glxs0j1I+WIXAQWhDHZxTNa+9OqnJ41fBE1mABc8uKa9hAq6KE/F8czcuft/? =?us-ascii?Q?llpzyiZSonMH1wUSOozWxUvU6bsd8bCNDO5uzH8QiiiXja/7vUsPI4Ofa2CO? =?us-ascii?Q?gDhgGZoC79r9uJyyNaDQSJZn5sGx5/QtlgaHCUnFpDfW7ecJ/f6ofHMUKyil? =?us-ascii?Q?u+nUF/5iqkYFsecdhFD7VCLiGxxp4SaCbVBrrdxbtt7DII9+pPa128CZ5jHz? =?us-ascii?Q?Hatl/DbgQoYvsrh9ZEKJ7JTnhap4R4ljKeWeOOHac8p5V1CuCV5AOK63uhzd? =?us-ascii?Q?fLr3BOpNlTm4h8iTdrW6PN0n7QUoA75YiuzFJS24T+dDTDyFfsdIOfWFHheN? =?us-ascii?Q?GXoM4hgsk6FKCkI1AipuOpiSRNe7xz2VqW9JFf/CkvyEJrL21OVb8D1j1mGc? =?us-ascii?Q?4aH47MdilRJIZws6FpFxFUA3cxQT+dh4Azel+lkezTM29SGZkutrESoFcNQ9? =?us-ascii?Q?0JcrMrDtDYUjpye/99Frzug7Rjp6dIxkGiufXbLYlgvu21AwIx98y4l4WPDI? =?us-ascii?Q?Uk47/iqNTHqNhdSxXktzZsPnBLEEm0RYb67xctOqzPhyMXUy0sCVKLeQ7buy? =?us-ascii?Q?lWxqLllwHP8Nd7s/ixFqYPV+YjF/kYZ1mSwuZF3a7Cp3E+LrczERcpU1cvUX? =?us-ascii?Q?jM6tzj+B2WpizSmphKairJtwAQfQdo+86/wCrDIFA8aJg/B3VTkwS5+14IKg? =?us-ascii?Q?vUnO+fHey1gltlPzCY0=?X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:satlexmb07.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230040)(376014)(36860700013)(1800799024)(82310400026); DIR:OUT;
+ SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2025 08:37:26.9756 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ d9987d76-26c1-42ef-00ae-08de28d9337f
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=d8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+ BN2PEPF000044A8.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8600
+Received-SPF: permerror client-ip*01:111:f403:c000::1;
+ envelope-from=Shivansh.Dhiman@amd.com;
+ helo=BYAPR05CU005.outbound.protection.outlook.com
+X-Spam_score_int: -20
+X-Spam_score: -2.1
+X-Spam_bar: --
+X-Spam_report: (-2.1 / 5.0 requ) BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001,
+ DKIM_SIGNED=0.1, DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_PASS=-0.001,
+ SPF_PASS=-0.001 autolearn=ham autolearn_force=no
+X-Spam_action: no action
+X-Mailman-Approved-At: Fri, 21 Nov 2025 04:57:32 -0500
+X-BeenThere: qemu-devel@nongnu.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: <qemu-devel.nongnu.org>
+List-Unsubscribe: <https://lists.nongnu.org/mailman/options/qemu-devel>,
+ <mailto:qemu-devel-request@nongnu.org?subject=unsubscribe>
+List-Archive: <https://lists.nongnu.org/archive/html/qemu-devel>
+List-Post: <mailto:qemu-devel@nongnu.org>
+List-Help: <mailto:qemu-devel-request@nongnu.org?subject=help>
+List-Subscribe: <https://lists.nongnu.org/mailman/listinfo/qemu-devel>,
+ <mailto:qemu-devel-request@nongnu.org?subject=subscribe>
+Errors-To: qemu-devel-bounces+importer=patchew.org@nongnu.org
+Sender: qemu-devel-bounces+importer=patchew.org@nongnu.org
+X-ZohoMail-DKIM: pass (identity @amd.com)
+X-ZM-MESSAGEID: 1763719085891018900
+Content-Type: text/plain; charset="utf-8"
+
+Enable CPUID leaf 0x80000026 (Extended CPU Topology) for AMD Zen4+ processors,
+i.e, Genoa and above. Add version 3 to EPYC-Genoa and version 2 to EPYC-Turin
+CPU models with x-force-cpuid-0x80000026 property enabled.
+
+Signed-off-by: Shivansh Dhiman <shivansh.dhiman@amd.com>
+Reviewed-by: Zhao Liu <zhao1.liu@intel.com>
+
+---
+---
+ target/i386/cpu.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/target/i386/cpu.c b/target/i386/cpu.c
+index 01c4da7cf134..12500d6b7bed 100644
+--- a/target/i386/cpu.c
++++ b/target/i386/cpu.c
+@@ -6505,6 +6505,13 @@ static const X86CPUDefinition builtin_x86_defs[] = {
+                 },
+                 .cache_info = &epyc_genoa_v2_cache_info
+             },
++            {
++                .version = 3,
++                .props = (PropValue[]) {
++                    { "x-force-cpuid-0x80000026", "on" },
++                    { /* end of list */ }
++                }
++            },
+             { /* end of list */ }
+         }
+     },
+@@ -6735,6 +6742,17 @@ static const X86CPUDefinition builtin_x86_defs[] = {
+         .xlevel = 0x80000022,
+         .model_id = "AMD EPYC-Turin Processor",
+         .cache_info = &epyc_turin_cache_info,
++        .versions = (X86CPUVersionDefinition[]) {
++            { .version = 1 },
++            {
++                .version = 2,
++                .props = (PropValue[]) {
++                    { "x-force-cpuid-0x80000026", "on" },
++                    { /* end of list */ }
++                }
++            },
++            { /* end of list */ }
++        }
+     },
+ };
+ 
+

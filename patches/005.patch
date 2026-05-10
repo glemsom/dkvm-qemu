@@ -1,0 +1,94 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Shivansh Dhiman <shivansh.dhiman@amd.com>
+Date: Fri, 21 Nov 2025 08:34:52 +0000
+Subject: [PATCH 5/5] i386: Add Bus Lock Detect support for EPYC-Turin-v2 model
+
+Date: Fri, 21 Nov 2025 08:34:52 +0000
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: satlexmb07.amd.com (10.181.42.216) To satlexmb07.amd.com
+ (10.181.42.216)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF000044A9:EE_|BN5PR12MB9510:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5bd28d36-d5a2-4819-c28c-08de28d9522b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+ ARA:13230040|376014|1800799024|36860700013|82310400026;
+X-Microsoft-Antispam-Message-Info: 
+ =?us-ascii?Q?sbu+7SzW0BSgJCxW7c7IG/wPasYc5Wt//1wL0gAn9JCXpry2hI0NUV5Ld7tN? =?us-ascii?Q?on1VO/eXe+jmMSLS44Ztq2L4lIOLDa0OYs/dfmnum+JIlfh6FEiQUiEQDp0W? =?us-ascii?Q?KYVkTg1jKnHAa1b5z5QMdSS0Mn5S9UJCNkvASa9FvV3n0bgDpojQe/Rw+375? =?us-ascii?Q?TI3jpMW2m/6D1ZSmmFHQY1MaJRcF6OqQcro0n2/0UsGExeWJ66ynUSiVwJqd? =?us-ascii?Q?EIXFFUnrQqeHi1GE++MhjNnXE25yWtYuIN/eRH63Hdvr0uNjJecNxA3ub3sn? =?us-ascii?Q?+hnmXuC2GdYO8A40DMtbfxgPiJs5g8yRaRVsykpXOLbL328hX3nFRxFu0NCE? =?us-ascii?Q?/DAs8dq4ivyIK8F4HkRDlkV2uTszvp7H/ZePJe4yIYnxyK19KT0kcwKYUDhF? =?us-ascii?Q?uBpNOqfw5/aDsD7B7b3HEGVdNFBHqGrNEkbl+ZziMbgfMpgYYwCMaL0+zBjZ? =?us-ascii?Q?JeLS2asGYsVOxyk4M6m1N4/RSwSvGeKVak0NX98Yxs+3Vbt81Sy4FFpfb7/9? =?us-ascii?Q?0yvkO/nf+kkJVbSgA5ZMPARCb1u/ZXlpqZXFL046HR1hUUmDSPYB9UaAoeVT? =?us-ascii?Q?lqLbORK2Zozk2KBoG6/vCAuVIPDuA+pIADLZRPRLoEUp8rjoCxVj0/f6Q44v? =?us-ascii?Q?+CzA5eGClsGY/Kz/d+hwnCGUgf40xM8/e1CPUSDCJj9gqIV3baglEjA/BMEN? =?us-ascii?Q?owNpBfTSyMjmegzBhR4jX8aW8D4xaNtQG1DTUD9lV2gFEM65hb9a83FLLmZs? =?us-ascii?Q?j0c5OkILsBkF+s3G9dXGzSv70oKMoHKvvnyyUVvpa7CDEj3A4JHt0Rh4d6Lu? =?us-ascii?Q?+Nk3PsmGwfruUFJGhoKPzi6rgNTuWIeXAoWQQPSoIyi/sJCI7FnZ6qOoidUT? =?us-ascii?Q?ekHw0TERVi9tbx+sA2EkBfFBZzssR4u6F+S9DzfaMxKbB2GlJhM0LRrKDAab? =?us-ascii?Q?CO3cR7CBDpel4dDaG3nmxx0BiXPA9GxPNAYA0+Oc2Rrp4iiRLtll/GZr2/AP? =?us-ascii?Q?1RXCp0qRMTBzZsbm2bk+IU8vFTETORF3FoE+cZ4Hpa/y/C8U7/rQMwYGDcYF? =?us-ascii?Q?5I0qs0wjJCXQGDHyspEDIStareeT7ENbOaVCa+ZyeU9dRp/Qm4swS0OIJwQ5? =?us-ascii?Q?akeqo1nNX0iZDqq/h7eQg7DZ4RhrD4JpCKf8nic3sFIErajbIhRAzQVbxhM6? =?us-ascii?Q?s+4qf1lq6i85ctNo2qE0yJ1QKESlwtCA201eG6k3Hd8UYuZSTcTJBROr8IA/? =?us-ascii?Q?hPaPfG/PKp1GxBnqa2ba9578vY2+hyeSjT8BdcrzDt1HNhomli+a9zMc3OdO? =?us-ascii?Q?DYuU1z6IyKDPKVmKpgLkPbFSFnyAXAnJsamveP795IpHet+Fba8hPoalc5gQ? =?us-ascii?Q?NJ1hQiUBrgC/prTxjd15NiYZWICJSNkx3mgXQnDQ/mvG/JEH+q2DmmbWPEwP? =?us-ascii?Q?cpfyyoiQysvVDdmOAc41+rVWWIldwHuQJwK8MuuIZnL6Ina1RPmw0EMv+VXg? =?us-ascii?Q?ncryY7nBiccZ3pT5iojmRDEjRgzBQOtoEE/591mxLW2kOc0UTdQnqdjPMK5F? =?us-ascii?Q?8rhcKbs9SCSuha6MUEk=?X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:satlexmb07.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230040)(376014)(1800799024)(36860700013)(82310400026); DIR:OUT;
+ SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2025 08:38:18.4383 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 5bd28d36-d5a2-4819-c28c-08de28d9522b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=d8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+ BN2PEPF000044A9.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN5PR12MB9510
+Received-SPF: permerror client-ip*01:111:f403:c100::f;
+ envelope-from=Shivansh.Dhiman@amd.com;
+ helo=BL2PR02CU003.outbound.protection.outlook.com
+X-Spam_score_int: -20
+X-Spam_score: -2.1
+X-Spam_bar: --
+X-Spam_report: (-2.1 / 5.0 requ) BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001,
+ DKIM_SIGNED=0.1, DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ SPF_HELO_PASS=-0.001, SPF_PASS=-0.001 autolearn=ham autolearn_force=no
+X-Spam_action: no action
+X-Mailman-Approved-At: Fri, 21 Nov 2025 04:57:38 -0500
+X-BeenThere: qemu-devel@nongnu.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: <qemu-devel.nongnu.org>
+List-Unsubscribe: <https://lists.nongnu.org/mailman/options/qemu-devel>,
+ <mailto:qemu-devel-request@nongnu.org?subject=unsubscribe>
+List-Archive: <https://lists.nongnu.org/archive/html/qemu-devel>
+List-Post: <mailto:qemu-devel@nongnu.org>
+List-Help: <mailto:qemu-devel-request@nongnu.org?subject=help>
+List-Subscribe: <https://lists.nongnu.org/mailman/listinfo/qemu-devel>,
+ <mailto:qemu-devel-request@nongnu.org?subject=subscribe>
+Errors-To: qemu-devel-bounces+importer=patchew.org@nongnu.org
+Sender: qemu-devel-bounces+importer=patchew.org@nongnu.org
+X-ZohoMail-DKIM: pass (identity @amd.com)
+X-ZM-MESSAGEID: 1763719085628018900
+Content-Type: text/plain; charset="utf-8"
+
+Enable the Bus Lock Detect feature for the EPYC-Turin-v2 CPU model to
+match the hardware capabilities of AMD Turin processors. This feature
+allows detection of split locks and bus locks, which can cause
+performance degradation in multi-core systems.
+
+The bus-lock-detect feature is part of the architectural capabilities
+exposed through CPUID and should be enabled by default for Turin v2
+and later CPU models.
+
+Signed-off-by: Shivansh Dhiman <shivansh.dhiman@amd.com>
+
+---
+ target/i386/cpu.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/target/i386/cpu.c b/target/i386/cpu.c
+index 12500d6b7bed..660b9c2a98b6 100644
+--- a/target/i386/cpu.c
++++ b/target/i386/cpu.c
+@@ -6748,6 +6748,7 @@ static const X86CPUDefinition builtin_x86_defs[] = {
+                 .version = 2,
+                 .props = (PropValue[]) {
+                     { "x-force-cpuid-0x80000026", "on" },
++                    { "bus-lock-detect", "on" },
+                     { /* end of list */ }
+                 }
+             },
+
