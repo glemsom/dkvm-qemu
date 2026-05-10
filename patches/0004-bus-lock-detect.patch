@@ -1,0 +1,35 @@
+diff --git a/target/i386/cpu.h b/target/i386/cpu.h
+index 0fecca26dc4a..852b3a33b54d 100644
+--- a/target/i386/cpu.h
++++ b/target/i386/cpu.h
+@@ -276,6 +276,7 @@ typedef enum X86Seg {
+                 | CR4_SMEP_MASK | CR4_SMAP_MASK | CR4_PKE_MASK | CR4_PKS_MASK \
+                 | CR4_LAM_SUP_MASK | CR4_FRED_MASK))
+ 
++#define DR6_BLD         (1 << 11)
+ #define DR6_BD          (1 << 13)
+ #define DR6_BS          (1 << 14)
+ #define DR6_BT          (1 << 15)
+diff --git a/target/i386/kvm/kvm.c b/target/i386/kvm/kvm.c
+index ed3d40bf073e..00c44c2de650 100644
+--- a/target/i386/kvm/kvm.c
++++ b/target/i386/kvm/kvm.c
+@@ -5864,14 +5864,14 @@ static int kvm_handle_debug(X86CPU *cpu,
+     } else if (kvm_find_sw_breakpoint(cs, arch_info->pc)) {
+         ret = EXCP_DEBUG;
+     }
+-    if (ret == 0) {
++    if (ret == 0 || !(arch_info->dr6 & DR6_BLD)) {
+         cpu_synchronize_state(cs);
+         assert(env->exception_nr == -1);
+ 
+         /* pass to guest */
+         kvm_queue_exception(env, arch_info->exception,
+                             arch_info->exception == EXCP01_DB,
+-                            arch_info->dr6);
++                            ret == 0 ? arch_info->dr6 ^ DR6_BLD : DR6_BLD);
+         env->has_error_code = 0;
+     }
+ 
+-- 
+2.43.0
