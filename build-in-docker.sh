@@ -24,6 +24,7 @@ fi
 mkdir -p /home/builder/qemu
 cp -r /workspace/APKBUILD /workspace/qemu.* /home/builder/qemu/
 cp -r /workspace/patches /home/builder/qemu/
+cp -r /workspace/qemu-guest-agent.confd /home/builder/qemu/
 chown -R builder:abuild /home/builder/qemu
 cd /home/builder/qemu
 
