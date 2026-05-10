@@ -1,7 +1,10 @@
 #!/bin/bash
 # Initialize abuild environment and build QEMU package
 
-set -e
+set -x
+
+# Update repositoruies and install build dependencies
+sudo apk update || true
 
 # Ensure packages directory is writable
 sudo mkdir -p /home/builder/packages/x86_64

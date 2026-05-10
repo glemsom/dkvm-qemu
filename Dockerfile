@@ -1,5 +1,5 @@
 # Dockerfile for building QEMU APK on Alpine
-FROM alpine:edge
+FROM alpine:3.23
 
 # Install build dependencies
 RUN apk add --no-cache \
