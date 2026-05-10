@@ -462,11 +462,6 @@ package() {
 	rm -rf "$pkgdir"/usr/share/doc
 	# remove accel-qtest-* modules, not needed for package
 	rm -f "$pkgdir"/usr/lib/qemu/accel-qtest-*
-
-	install -Dm755 "$srcdir"/$pkgname-guest-agent.initd \
-		"$pkgdir"/etc/init.d/$pkgname-guest-agent
-	install -Dm644 "$srcdir"/$pkgname-guest-agent.confd \
-		"$pkgdir"/etc/conf.d/$pkgname-guest-agent
 }
 
 _subsys() {
@@ -597,6 +592,16 @@ guest() {
 
 	mkdir -p "$subpkgdir"/usr/bin
 	mv "$pkgdir"/usr/bin/qemu-ga "$subpkgdir"/usr/bin/
+}
+
+_guest_agent_openrc() {
+	pkgdesc="QEMU guest agent OpenRC scripts"
+	depends=""
+
+	install -Dm755 "$srcdir"/$pkgname-guest-agent.initd \
+		"$subpkgdir"/etc/init.d/$pkgname-guest-agent
+	install -Dm644 "$srcdir"/$pkgname-guest-agent.confd \
+		"$subpkgdir"/etc/conf.d/$pkgname-guest-agent
 }
 
 _module() {
