@@ -465,7 +465,7 @@ package() {
 
 	install -Dm755 "$srcdir"/$pkgname-guest-agent.initd \
 		"$pkgdir"/etc/init.d/$pkgname-guest-agent
-	install -Dm644 "$srcdir"/$pkgname-guest-agent.confd \
+	install -Dm644 "$srcdir"/patches/$pkgname-guest-agent.confd \
 		"$pkgdir"/etc/conf.d/$pkgname-guest-agent
 }
 
