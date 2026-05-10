@@ -22,5 +22,8 @@
 # Lean context cache
 .lean-ctx/
 
+# Build artifacts
+config-temp/
+
 # Keep APKBUILD
 !/APKBUILD
