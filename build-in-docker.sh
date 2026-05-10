@@ -20,8 +20,13 @@ if [ -n "$PUB_KEY" ]; then
     sudo cp "$PUB_KEY" /etc/apk/keys/
 fi
 
-# Build from workspace
-cd /workspace
+# Copy workspace contents (APKBUILD, patches, etc.) to writable builder home
+mkdir -p /home/builder/qemu
+cp -r /workspace/APKBUILD /workspace/patches/ /workspace/qemu.* /home/builder/qemu/
+chown -R builder:abuild /home/builder/qemu
+cd /home/builder/qemu
+
+# Build the package
 abuild -r 2>&1
 
 echo ""
@@ -30,7 +35,7 @@ APK_FILE=$(find /home/builder/packages -name "*.apk" -type f 2>/dev/null | head 
 if [ -n "$APK_FILE" ]; then
     echo "APK: $APK_FILE ($(du -h "$APK_FILE" | cut -f1))"
     echo ""
-    echo "To extract to workspace: cp $APK_FILE /workspace/"
+    echo "To copy to workspace: cp $APK_FILE /workspace/"
 else
     echo "No APK found. Check ~/packages/"
 fi
