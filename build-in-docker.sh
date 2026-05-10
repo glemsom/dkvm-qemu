@@ -23,6 +23,7 @@ fi
 # Copy workspace contents (APKBUILD, patches, etc.) to writable builder home
 mkdir -p /home/builder/qemu
 cp -r /workspace/APKBUILD /workspace/qemu.* /home/builder/qemu/
+cp /workspace/bridge.conf /home/builder/qemu/bridge.conf
 cp -r /workspace/patches /home/builder/qemu/
 cp -r /workspace/qemu-guest-agent.confd /workspace/qemu-guest-agent.initd /home/builder/qemu/
 chown -R builder:abuild /home/builder/qemu
