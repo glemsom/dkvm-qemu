@@ -21,7 +21,6 @@ makedepends="
 	libpng-dev
 	libseccomp-dev
 	libslirp-dev
-	libssh-dev
 	liburing-dev
 	libusb-dev
 	linux-headers
@@ -181,14 +180,15 @@ build() {
 		--enable-seccomp \
 		--enable-capstone \
 		--enable-curl \
-		--enable-libssh \
 		--enable-linux-aio \
 		--enable-lzo \
 		--enable-numa \
 		--enable-pie \
 		--enable-snappy \
 		--enable-tpm \
-		--enable-usb-redir \
+		--disable-libssh \
+		--disable-pipewire \
+		--disable-usb-redir \
 		--enable-vde \
 		--enable-vhost-net \
 		--enable-virtfs \
