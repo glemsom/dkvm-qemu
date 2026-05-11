@@ -7,7 +7,7 @@ pkgver=10.1.5
 pkgrel=0
 pkgdesc="QEMU is a generic machine emulator and virtualizer"
 url="https://qemu.org/"
-arch="all"
+arch="x86_64"
 license="GPL-2.0-only AND LGPL-2.1-only"
 makedepends="
 	alsa-lib-dev
