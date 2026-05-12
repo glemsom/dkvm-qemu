@@ -1,29 +1,19 @@
-# Alpine packages build artifacts
-*.pkg.tar.*
-*.apk
+# Private signing keys - NEVER commit!
+*.rsa
 
-# Build directories
-/.build/
-/build/
-/src/
-/pkg/
-/tmp/
+# Generated repository files (large binaries, optional)
+# Uncomment to track repo files:
+# repo/
 
-# abuild files
-*.log
-*.sum
-.conf
-.rundir
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
 
-# Signatures
-*.sig
-*.asc
-
-# Lean context cache
-.lean-ctx/
-
-# Build artifacts
-config-temp/
-
-# Keep APKBUILD
-!/APKBUILD
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
