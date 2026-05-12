@@ -5,7 +5,6 @@ on:
     branches: [main]
     paths:
       - 'repo/**'
-      - 'keys/*.rsa.pub'
   workflow_dispatch:
 
 permissions:
@@ -32,9 +31,8 @@ jobs:
 
       - name: Prepare artifact
         run: |
-          # Copy public key to repo for easy access
+          # Copy public key to repo for easy verification
           cp keys/*.rsa.pub repo/
-          ls -la repo/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
