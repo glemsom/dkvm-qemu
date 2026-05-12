@@ -1,12 +1,12 @@
 # QEMU Alpine Package Repository
 
-This repository contains a custom Alpine Linux package build system for QEMU with additional patches and optimizations for x86_64 virtualization.
+This repository automatically builds custom Alpine Linux packages for QEMU with additional patches and optimizations for x86_64 virtualization.
 
 ## Overview
 
-- **QEMU Version**: 10.1.5
-- **Target**: Alpine Linux (x86_64)
 - **Purpose**: Custom QEMU builds with enhanced CPUID support, EPYC vCPU optimizations, and bus lock detection patches
+- **Build System**: Automated via GitHub Actions
+- **Signing**: Packages are signed with a private key stored in GitHub Secrets
 
 ## Repository Structure
 
@@ -20,13 +20,15 @@ This repository contains a custom Alpine Linux package build system for QEMU wit
 │   ├── 0004-bus-lock-detect.patch
 │   ├── 0005-bus-lock-detect-epyc.patch
 │   └── ...                     # Additional patches
-├── repo/                       # Built packages and signed repository
 ├── keys/                       # Signing keys for repository
-├── build-in-docker.sh          # Build script (Docker-based)
-├── create-repo.sh              # Repository index creation and signing
-├── generate-key.sh             # Generate repository signing keys
+│   └── qemu-builder.rsa.pub    # Public key for package verification
 ├── Dockerfile                  # Build environment container
-└── rebuild.sh                  # Full rebuild script
+├── create-repo.sh              # Repository index creation and signing
+├── qemu.post-install           # Post-install script
+├── qemu.pre-install            # Pre-install script
+├── qemu.pre-upgrade            # Pre-upgrade script
+└── .github/workflows/          # GitHub Actions CI/CD
+    └── build.yml               # Build and publish workflow
 ```
 
 ## Features
@@ -48,19 +50,6 @@ The package is built with:
 - TPM support
 - Zstd, Snappy, LZO compression
 
-## Contents
-
-- `repo/x86_64/qemu-10.1.5-r0.apk` - Main QEMU package
-- `repo/x86_64/qemu-system-x86_64-10.1.5-r0.apk` - QEMU system emulator for x86_64
-- `repo/x86_64/APKINDEX.tar.gz` - Signed repository index
-
-## Signing Key
-
-The public key for verifying packages is at:
-```
-keys/qemu-builder.rsa.pub
-```
-
 ## Usage
 
 ### 1. Import the signing key
@@ -71,12 +60,14 @@ sudo cp keys/qemu-builder.rsa.pub /etc/apk/keys/
 
 ### 2. Add the repository
 
-```bash
-# For local/testing usage:
-echo "file:///path/to/repo/x86_64" >> /etc/apk/repositories
+The repository is published via GitHub Pages at:
+```
+https://raw.githubusercontent.com/<owner>/<repo>/main/repo/x86_64
+```
 
-# Or for web hosting:
-echo "https://your-domain.com/repo/x86_64" >> /etc/apk/repositories
+Or for local usage:
+```bash
+echo "file:///path/to/repo/x86_64" >> /etc/apk/repositories
 ```
 
 ### 3. Install QEMU
@@ -86,43 +77,18 @@ apk update
 apk add qemu qemu-system-x86_64
 ```
 
-## Building
+## CI/CD
 
-### Quick Build
+This repository uses GitHub Actions to automatically build and publish packages:
 
-```bash
-./rebuild.sh
-```
+- **Triggers**: Push to main branch (when Dockerfile, APKBUILD, or patches change) or manual dispatch
+- **Build**: Packages are built in a Docker container with Alpine 3.23
+- **Sign**: Packages are signed using the private key stored in `SIGNING_PRIVATE_KEY` secret
+- **Publish**: The signed repository is published to GitHub Pages
 
-### Manual Build Steps
+### Required Secrets
 
-1. **Generate signing keys** (first time only):
-   ```bash
-   ./generate-key.sh
-   ```
-
-2. **Build packages** (requires Docker):
-   ```bash
-   ./build-in-docker.sh
-   ```
-
-3. **Copy APK files** to `repo/x86_64/`:
-   ```bash
-   cp *.apk repo/x86_64/
-   ```
-
-4. **Create signed repository**:
-   ```bash
-   ./create-repo.sh
-   ```
-
-## Publishing
-
-To host this repository:
-
-1. Upload the `repo/` directory to a web server
-2. Ensure the URL path matches the repository structure
-3. Users can then add the repository URL to their `/etc/apk/repositories`
+- `SIGNING_PRIVATE_KEY`: RSA private key matching `keys/qemu-builder.rsa.pub`
 
 ## Files Reference
 
@@ -130,9 +96,7 @@ To host this repository:
 |------|-------------|
 | `APKBUILD` | Alpine package build recipe |
 | `create-repo.sh` | Creates signed APKINDEX.tar.gz |
-| `generate-key.sh` | Generates RSA signing keys |
-| `build-in-docker.sh` | Builds packages in Docker container |
 | `Dockerfile` | Alpine-based build environment |
-| `rebuild.sh` | Complete rebuild workflow |
-| `qemu-guest-agent.initd` | OpenRC init script (template) |
-| `qemu-guest-agent.confd` | OpenRC configuration (template) |
+| `.github/workflows/build.yml` | GitHub Actions CI/CD pipeline |
+| `patches/*.patch` | QEMU source patches |
+| `keys/qemu-builder.rsa.pub` | Public key for package verification |

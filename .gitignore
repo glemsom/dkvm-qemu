@@ -1,9 +1,9 @@
 # Private signing keys - NEVER commit!
 *.rsa
 
-# Generated repository files (large binaries, optional)
-# Uncomment to track repo files:
-# repo/
+# Built APK packages in repo
+repo/**/*.apk
+repo/**/APKINDEX.tar.gz
 
 # Python cache
 __pycache__/
@@ -16,4 +16,4 @@ __pycache__/
 .idea/
 .vscode/
 *.swp
-*.swo
+*.swo.lean-ctx/

@@ -51,18 +51,36 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Extract Alpine packages from image
+      - name: Build APK packages in Docker
         run: |
-          # Build the image which contains the APK packages
+          # Create a persistent volume for packages
+          docker volume create qemu-packages
+          
+          # Build the Docker image
           docker build -t qemu-apk-builder .
           
-          # Extract packages from the built image
-          docker run --rm -v $(pwd)/repo:/packages qemu-apk-builder sh -c "
-            # Copy packages from build context if they exist
-            if [ -d /workspace/packages ]; then
-              cp /workspace/packages/*.apk /packages/ 2>/dev/null || true
-            fi
-          " || true
+          # Run the container to build packages, mounting workspace for APKBUILD and patches
+          docker run --rm \
+            -v qemu-packages:/home/builder/packages \
+            -v ${{ github.workspace }}/APKBUILD:/home/builder/qemu/APKBUILD:ro \
+            -v ${{ github.workspace }}/patches:/home/builder/qemu/patches:ro \
+            -v ${{ github.workspace }}/qemu.*:/home/builder/qemu/:ro \
+            qemu-apk-builder sh -c "
+              cd /home/builder/qemu &&
+              abuild -r
+            "
+          
+          # Extract built packages from the volume
+          mkdir -p repo/x86_64
+          docker run --rm \
+            -v qemu-packages:/home/builder/packages \
+            -v ${{ github.workspace }}/repo/x86_64:/out \
+            alpine:3.23 sh -c "
+              find /home/builder/packages -name '*.apk' -exec cp {} /out/ \;
+            "
+          
+          echo "APK packages built:"
+          ls -la repo/x86_64/
 
       - name: Create signed repository
         run: |
