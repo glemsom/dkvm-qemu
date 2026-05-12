@@ -15,6 +15,9 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  SIGNING_KEY_NAME: qemu-builder.rsa
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,30 +25,54 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Verify signing key secret exists
+        run: |
+          if [ -z "${{ secrets.SIGNING_PRIVATE_KEY }}" ]; then
+            echo "::error::SIGNING_PRIVATE_KEY secret is not set"
+            echo "Please add the private key matching keys/qemu-builder.rsa.pub to GitHub Secrets"
+            exit 1
+          fi
+          echo "✓ Signing key secret found"
+
+      - name: Verify key pair matches
+        run: |
+          # Write the secret to a temp file
+          echo "${{ secrets.SIGNING_PRIVATE_KEY }}" > /tmp/signing-key.pem
+          
+          # Extract public key from the private key and compare
+          openssl rsa -in /tmp/signing-key.pem -pubout -out /tmp/derived-pubkey.pem 2>/dev/null
+          
+          # Compare (normalize whitespace first)
+          diff <(grep -v '^--' /tmp/derived-pubkey.pem | tr -d '\n ') \
+               <(grep -v '^--' keys/qemu-builder.rsa.pub | tr -d '\n ') \
+               && echo "✓ Public key matches! Signature verification will work." \
+               || (echo "::error::Public key mismatch! The SECRET private key does not match qemu-builder.rsa.pub"; exit 1)
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build APM packages
+      - name: Extract Alpine packages from image
         run: |
+          # Build the image which contains the APK packages
           docker build -t qemu-apk-builder .
-          docker run --rm -v $(pwd)/repo:/packages alpine:3.23 sh -c "
-            apk add --no-cache alpine-sdk
-            # Copy APKBUILD and patches
-            cp -r /workspace/APKBUILD /workspace/patches /tmp/ 2>/dev/null || true
-          " || echo "Build would happen here - skipped for now"
+          
+          # Extract packages from the built image
+          docker run --rm -v $(pwd)/repo:/packages qemu-apk-builder sh -c "
+            # Copy packages from build context if they exist
+            if [ -d /workspace/packages ]; then
+              cp /workspace/packages/*.apk /packages/ 2>/dev/null || true
+            fi
+          " || true
 
-      - name: Generate signing key
+      - name: Create signed repository
         run: |
+          # Write the private key from secrets
           mkdir -p keys
-          # Generate a key for CI (in practice, use secrets)
-          openssl genrsa -out keys/ci-builder.rsa 2048 2>/dev/null
-          openssl rsa -in keys/ci-builder.rsa -pubout -out keys/ci-builder.rsa.pub
-
-      - name: Create repository
-        run: |
-          # This would run after actual package build
-          # For now, we assume packages exist in repo/
-          echo "Repository creation placeholder"
+          echo "${{ secrets.SIGNING_PRIVATE_KEY }}" > keys/qemu-builder.rsa
+          chmod 600 keys/qemu-builder.rsa
+          
+          # Create and sign the repository
+          ./create-repo.sh repo/x86_64
 
   deploy:
     needs: build
@@ -59,6 +86,11 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      - name: Prepare artifact
+        run: |
+          # Copy public key to repo for easy verification
+          cp keys/*.rsa.pub repo/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
