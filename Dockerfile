@@ -4,12 +4,14 @@ FROM alpine:3.23
 # Install build dependencies
 RUN apk update && apk add --no-cache \
     alpine-sdk bash sudo \
-    alsa-lib-dev attr-dev curl-dev \
-    dtc-dev glib-dev gnutls-dev lvm2-dev \
-    gtk+3.0-dev cyrus-sasl-dev libseccomp-dev \
-    libslirp-dev libssh-dev linux-headers meson ninja \
-    perl pinentry pipewire-dev python3 sdl2-dev \
-    spice-dev usbredir-dev zlib-dev zstd-dev \
+    alsa-lib-dev attr-dev bison capstone-dev curl-dev \
+    dtc-dev flex glib-dev gnutls-dev lvm2-dev \
+    gtk+3.0-dev cyrus-sasl-dev libaio-dev libjpeg-turbo-dev \
+    libpng-dev libseccomp-dev libslirp-dev libssh-dev \
+    liburing-dev libusb-dev linux-headers lzo-dev meson ninja \
+    numactl-dev perl pinentry pipewire-dev python3 sdl2-dev \
+    snappy-dev spice-dev sudo util-linux-dev vde2-dev \
+    usbredir-dev zlib-dev zstd-dev \
     && rm -rf /var/cache/apk/*
 
 # Create builder user
