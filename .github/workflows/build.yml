@@ -64,6 +64,9 @@ jobs:
           # Create a persistent volume for packages
           docker volume create qemu-packages
           
+          # Initialize volume ownership (builder:abuild = 1000:300)
+          docker run --rm -v qemu-packages:/home/builder/packages alpine:3.23 chown -R 1000:300 /home/builder/packages
+          
           # Build the Docker image
           docker build -t qemu-apk-builder .
           
