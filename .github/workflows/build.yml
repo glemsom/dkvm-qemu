@@ -68,13 +68,16 @@ jobs:
           docker build -t qemu-apk-builder .
           
           # Run the container to build packages, mounting the key and source
+          # Source is mounted read-only to /src, then copied into writable filesystem
+          # because abuild needs write access (creates src/, logs, build artifacts)
           docker run --rm \
             -v qemu-packages:/home/builder/packages \
             -v ${{ github.workspace }}/keys/signkey.rsa:/home/builder/.abuild/signkey.rsa:ro \
             -v ${{ github.workspace }}/keys/signkey.rsa.pub:/home/builder/.abuild/signkey.rsa.pub:ro \
             -v ${{ github.workspace }}/keys/abuild.conf:/home/builder/.abuild/abuild.conf:ro \
-            -v ${{ github.workspace }}:/home/builder/qemu:ro \
+            -v ${{ github.workspace }}:/src:ro \
             qemu-apk-builder sh -c "
+              cp -a /src /home/builder/qemu && \
               apk update && \
               cd /home/builder/qemu && \
               abuild -r
