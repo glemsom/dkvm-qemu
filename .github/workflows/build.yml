@@ -71,6 +71,7 @@ jobs:
           docker run --rm \
             -v qemu-packages:/home/builder/packages \
             -v ${{ github.workspace }}/keys/signkey.rsa:/home/builder/.abuild/signkey.rsa:ro \
+            -v ${{ github.workspace }}/keys/signkey.rsa.pub:/home/builder/.abuild/signkey.rsa.pub:ro \
             -v ${{ github.workspace }}/keys/abuild.conf:/home/builder/.abuild/abuild.conf:ro \
             -v ${{ github.workspace }}:/home/builder/qemu:ro \
             qemu-apk-builder sh -c "
