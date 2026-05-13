@@ -88,7 +88,7 @@ jobs:
               openssl rsa -in /home/builder/.abuild/signkey.rsa -pubout -out /home/builder/.abuild/signkey.rsa.pub 2>/dev/null && \
               cp /home/builder/.abuild/signkey.rsa.pub /etc/apk/keys/signkey.rsa.pub && \
               apk update && \
-              su - builder -c 'cd /home/builder/qemu && abuild -r'
+              HOME=/home/builder sudo -u builder bash -c 'cd /home/builder/qemu && abuild -r'
             "
           
           # Extract built packages from the volume
