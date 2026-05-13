@@ -128,6 +128,12 @@ jobs:
           name: apk-repo
           path: ./repo
 
+      - name: Checkout public key
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: keys
+          sparse-checkout-cone-mode: false
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
