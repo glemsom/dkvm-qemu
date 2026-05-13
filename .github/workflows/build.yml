@@ -77,7 +77,8 @@ jobs:
             -v ${{ github.workspace }}/keys/abuild.conf:/home/builder/.abuild/abuild.conf:ro \
             -v ${{ github.workspace }}:/src:ro \
             qemu-apk-builder sh -c "
-              cp -r /src /home/builder/qemu && \
+              mkdir -p /home/builder/qemu && \
+              (cd /src && tar cf - --exclude=keys .) | (cd /home/builder/qemu && tar xf -) && \
               chmod -R u+w /home/builder/qemu && \
               apk update && \
               cd /home/builder/qemu && \
