@@ -50,27 +50,27 @@ The package is built with:
 - TPM support
 - Zstd, Snappy, LZO compression
 
-## Usage
+## Adding the Repository
 
 ### 1. Import the signing key
+
+Copy the public key to Alpine's trusted keys directory:
 
 ```bash
 sudo cp keys/qemu-builder.rsa.pub /etc/apk/keys/
 ```
 
-### 2. Add the repository
+### 2. Add the repository URL
 
-The repository is published via GitHub Pages at:
-```
-https://raw.githubusercontent.com/<owner>/<repo>/main/repo/x86_64
-```
+Add the repository to `/etc/apk/repositories`. Replace `<owner>` and `<repo>` with the actual GitHub repository details:
 
-Or for local usage:
 ```bash
-echo "file:///path/to/repo/x86_64" >> /etc/apk/repositories
+echo "https://raw.githubusercontent.com/<owner>/<repo>/main/repo/x86_64" >> /etc/apk/repositories
 ```
 
-### 3. Install QEMU
+### 3. Install packages
+
+Update the package index and install the desired packages:
 
 ```bash
 apk update
