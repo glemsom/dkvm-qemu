@@ -75,7 +75,7 @@ jobs:
           # because abuild needs write access (creates src/, logs, build artifacts)
           docker run --rm \
             -v qemu-packages:/home/builder/packages \
-            -v ${{ github.workspace }}/keys/signkey.rsa:/home/builder/.abuild/signkey.rsa:ro \
+            -v ${{ github.workspace }}/keys/signkey.rsa:/home/builder/.abuild/signkey.rsa \
             -v ${{ github.workspace }}/keys/signkey.rsa.pub:/home/builder/.abuild/signkey.rsa.pub:ro \
             -v ${{ github.workspace }}/keys/abuild.conf:/home/builder/.abuild/abuild.conf:ro \
             -v ${{ github.workspace }}:/src:ro \
@@ -84,6 +84,7 @@ jobs:
               mkdir -p /home/builder/qemu && \
               (cd /src && tar cf - --exclude=keys .) | (cd /home/builder/qemu && tar xf -) && \
               chown -R builder:abuild /home/builder/qemu && \
+              chmod 644 /home/builder/.abuild/signkey.rsa && \
               apk update && \
               su - builder -c 'cd /home/builder/qemu && abuild -r'
             "
