@@ -79,13 +79,12 @@ jobs:
             -v ${{ github.workspace }}/keys/signkey.rsa.pub:/home/builder/.abuild/signkey.rsa.pub:ro \
             -v ${{ github.workspace }}/keys/abuild.conf:/home/builder/.abuild/abuild.conf:ro \
             -v ${{ github.workspace }}:/src:ro \
+            --user root \
             qemu-apk-builder sh -c "
               mkdir -p /home/builder/qemu && \
               (cd /src && tar cf - --exclude=keys .) | (cd /home/builder/qemu && tar xf -) && \
-              chmod -R u+w /home/builder/qemu && \
-              apk update && \
-              cd /home/builder/qemu && \
-              abuild -r
+              chown -R builder:abuild /home/builder/qemu && \
+              su - builder -c 'cd /home/builder/qemu && abuild -r'
             "
           
           # Extract built packages from the volume
