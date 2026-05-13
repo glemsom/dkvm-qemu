@@ -2,7 +2,7 @@
 FROM alpine:3.23
 
 # Install build dependencies
-RUN apk add --no-cache \
+RUN apk update && apk add --no-cache \
     alpine-sdk bash sudo \
     alsa-lib-dev attr-dev curl-dev \
     dtc-dev glib-dev gnutls-dev lvm2-dev \

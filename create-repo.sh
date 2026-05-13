@@ -46,10 +46,9 @@ docker run --rm \
     -e SIGNPUBKEY="/keys/signkey.rsa.pub" \
     -w /repo \
     alpine:3.23 sh -c "
-        apk add --no-cache alpine-sdk
-        # Create index for v2 format packages (ignore untrusted signatures in packages)
-        apk --allow-untrusted index *.apk -o APKINDEX.tar.gz
-        # Sign the index with our private key
+        apk update && \
+        apk add --no-cache alpine-sdk && \
+        apk --allow-untrusted index *.apk -o APKINDEX.tar.gz && \
         abuild-sign APKINDEX.tar.gz
     "
 
