@@ -62,10 +62,10 @@ sudo cp keys/qemu-builder.rsa.pub /etc/apk/keys/
 
 ### 2. Add the repository URL
 
-Add the repository to `/etc/apk/repositories`. Replace `<owner>` and `<repo>` with the actual GitHub repository details:
+Add the repository to `/etc/apk/repositories`:
 
 ```bash
-echo "https://raw.githubusercontent.com/<owner>/<repo>/main/repo/x86_64" >> /etc/apk/repositories
+echo "https://raw.githubusercontent.com/glemsom/dkvm-qemu/main/repo/x86_64" >> /etc/apk/repositories
 ```
 
 ### 3. Install packages
