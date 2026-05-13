@@ -84,6 +84,7 @@ jobs:
               mkdir -p /home/builder/qemu && \
               (cd /src && tar cf - --exclude=keys .) | (cd /home/builder/qemu && tar xf -) && \
               chown -R builder:abuild /home/builder/qemu && \
+              apk update && \
               su - builder -c 'cd /home/builder/qemu && abuild -r'
             "
           
