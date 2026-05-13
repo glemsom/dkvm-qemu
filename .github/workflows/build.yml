@@ -92,6 +92,13 @@ jobs:
           # Create and sign the repository
           ./create-repo.sh repo/x86_64
 
+      - name: Upload repo artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-repo
+          path: ./repo
+          retention-days: 1
+
   deploy:
     needs: build
     environment:
@@ -99,8 +106,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Download repo artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: apk-repo
+          path: ./repo
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
