@@ -17,6 +17,7 @@ permissions:
 
 env:
   SIGNING_KEY_NAME: qemu-builder.rsa
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
@@ -59,12 +60,10 @@ jobs:
           # Build the Docker image
           docker build -t qemu-apk-builder .
           
-          # Run the container to build packages, mounting workspace for APKBUILD and patches
+          # Run the container to build packages, mounting the entire workspace as source
           docker run --rm \
             -v qemu-packages:/home/builder/packages \
-            -v ${{ github.workspace }}/APKBUILD:/home/builder/qemu/APKBUILD:ro \
-            -v ${{ github.workspace }}/patches:/home/builder/qemu/patches:ro \
-            -v ${{ github.workspace }}/qemu.*:/home/builder/qemu/:ro \
+            -v ${{ github.workspace }}:/home/builder/qemu:ro \
             qemu-apk-builder sh -c "
               cd /home/builder/qemu &&
               abuild -r
