@@ -16,7 +16,7 @@ permissions:
   id-token: write
 
 env:
-  SIGNING_KEY_NAME: qemu-builder.rsa
+  SIGNING_KEY_NAME: signkey.rsa
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
         run: |
           if [ -z "${{ secrets.SIGNING_PRIVATE_KEY }}" ]; then
             echo "::error::SIGNING_PRIVATE_KEY secret is not set"
-            echo "Please add the private key matching keys/qemu-builder.rsa.pub to GitHub Secrets"
+            echo "Please add the private key matching keys/signkey.rsa.pub to GitHub Secrets"
             exit 1
           fi
           echo "✓ Signing key secret found"
@@ -45,9 +45,16 @@ jobs:
           
           # Compare (normalize whitespace first)
           diff <(grep -v '^--' /tmp/derived-pubkey.pem | tr -d '\n ') \
-               <(grep -v '^--' keys/qemu-builder.rsa.pub | tr -d '\n ') \
+               <(grep -v '^--' keys/signkey.rsa.pub | tr -d '\n ') \
                && echo "✓ Public key matches! Signature verification will work." \
-               || (echo "::error::Public key mismatch! The SECRET private key does not match qemu-builder.rsa.pub"; exit 1)
+               || (echo "::error::Public key mismatch! The SECRET private key does not match signkey.rsa.pub"; exit 1)
+
+      - name: Setup signing key for abuild
+        run: |
+          mkdir -p keys
+          echo "${{ secrets.SIGNING_PRIVATE_KEY }}" > keys/signkey.rsa
+          chmod 600 keys/signkey.rsa
+          echo "PACKAGER_PRIVKEY=/home/builder/.abuild/signkey.rsa" > keys/abuild.conf
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -60,9 +67,11 @@ jobs:
           # Build the Docker image
           docker build -t qemu-apk-builder .
           
-          # Run the container to build packages, mounting the entire workspace as source
+          # Run the container to build packages, mounting the key and source
           docker run --rm \
             -v qemu-packages:/home/builder/packages \
+            -v ${{ github.workspace }}/keys/signkey.rsa:/home/builder/.abuild/signkey.rsa:ro \
+            -v ${{ github.workspace }}/keys/abuild.conf:/home/builder/.abuild/abuild.conf:ro \
             -v ${{ github.workspace }}:/home/builder/qemu:ro \
             qemu-apk-builder sh -c "
               cd /home/builder/qemu &&
@@ -83,11 +92,6 @@ jobs:
 
       - name: Create signed repository
         run: |
-          # Write the private key from secrets
-          mkdir -p keys
-          echo "${{ secrets.SIGNING_PRIVATE_KEY }}" > keys/qemu-builder.rsa
-          chmod 600 keys/qemu-builder.rsa
-          
           # Create and sign the repository
           ./create-repo.sh repo/x86_64
 

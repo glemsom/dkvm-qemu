@@ -16,8 +16,9 @@ RUN apk add --no-cache \
 RUN adduser -D -G abuild builder && \
     echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-# Pre-create packages directory with correct ownership
-RUN mkdir -p /home/builder/packages && chown -R builder:abuild /home/builder/packages
+# Pre-create packages and abuild directories
+RUN mkdir -p /home/builder/packages /home/builder/.abuild && \
+    chown -R builder:abuild /home/builder/packages /home/builder/.abuild
 
 WORKDIR /home/builder
 USER builder

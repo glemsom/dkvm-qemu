@@ -21,8 +21,8 @@ echo "$APKS"
 echo ""
 
 # Find the private key
-PRIVATE_KEY="keys/qemu-builder.rsa"
-PUBLIC_KEY="keys/qemu-builder.rsa.pub"
+PRIVATE_KEY="keys/signkey.rsa"
+PUBLIC_KEY="keys/signkey.rsa.pub"
 
 if [ ! -f "$PRIVATE_KEY" ]; then
     echo "Error: No private key found at $PRIVATE_KEY"
@@ -42,8 +42,8 @@ KEYS_ABS_PATH=$(readlink -f keys)
 docker run --rm \
     -v "$REPO_ABS_PATH":/repo \
     -v "$KEYS_ABS_PATH":/keys \
-    -e PACKAGER_PRIVKEY="/keys/qemu-builder.rsa" \
-    -e SIGNPUBKEY="/keys/qemu-builder.rsa.pub" \
+    -e PACKAGER_PRIVKEY="/keys/signkey.rsa" \
+    -e SIGNPUBKEY="/keys/signkey.rsa.pub" \
     -w /repo \
     alpine:3.23 sh -c "
         apk add --no-cache alpine-sdk
