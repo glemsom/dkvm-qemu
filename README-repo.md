@@ -65,7 +65,7 @@ sudo cp keys/qemu-builder.rsa.pub /etc/apk/keys/
 Add the repository to `/etc/apk/repositories`:
 
 ```bash
-echo "https://raw.githubusercontent.com/glemsom/dkvm-qemu/main/repo/x86_64" >> /etc/apk/repositories
+echo "https://glemsom.github.io/dkvm-qemu/x86_64" >> /etc/apk/repositories
 ```
 
 ### 3. Install packages
