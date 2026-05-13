@@ -85,6 +85,8 @@ jobs:
               (cd /src && tar cf - --exclude=keys .) | (cd /home/builder/qemu && tar xf -) && \
               chown -R builder:abuild /home/builder/qemu && \
               chmod 644 /home/builder/.abuild/signkey.rsa && \
+              openssl rsa -in /home/builder/.abuild/signkey.rsa -pubout -out /home/builder/.abuild/signkey.rsa.pub 2>/dev/null && \
+              cp /home/builder/.abuild/signkey.rsa.pub /etc/apk/keys/signkey.rsa.pub && \
               apk update && \
               su - builder -c 'cd /home/builder/qemu && abuild -r'
             "
