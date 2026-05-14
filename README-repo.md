@@ -21,7 +21,7 @@ This repository automatically builds custom Alpine Linux packages for QEMU with 
 │   ├── 0005-bus-lock-detect-epyc.patch
 │   └── ...                     # Additional patches
 ├── keys/                       # Signing keys for repository
-│   └── qemu-builder.rsa.pub    # Public key for package verification
+│   └── signkey.rsa.pub           # Public key for package verification
 ├── Dockerfile                  # Build environment container
 ├── create-repo.sh              # Repository index creation and signing
 ├── qemu.post-install           # Post-install script
@@ -57,7 +57,7 @@ The package is built with:
 Copy the public key to Alpine's trusted keys directory:
 
 ```bash
-sudo cp keys/qemu-builder.rsa.pub /etc/apk/keys/
+sudo cp keys/signkey.rsa.pub /etc/apk/keys/
 ```
 
 ### 2. Add the repository URL
@@ -65,7 +65,7 @@ sudo cp keys/qemu-builder.rsa.pub /etc/apk/keys/
 Add the repository to `/etc/apk/repositories`:
 
 ```bash
-echo "https://glemsom.github.io/dkvm-qemu/x86_64" >> /etc/apk/repositories
+echo "https://glemsom.github.io/dkvm-qemu/" >> /etc/apk/repositories
 ```
 
 ### 3. Install packages
@@ -88,7 +88,7 @@ This repository uses GitHub Actions to automatically build and publish packages:
 
 ### Required Secrets
 
-- `SIGNING_PRIVATE_KEY`: RSA private key matching `keys/qemu-builder.rsa.pub`
+- `SIGNING_PRIVATE_KEY`: RSA private key matching `keys/signkey.rsa.pub`
 
 ## Files Reference
 
@@ -99,4 +99,4 @@ This repository uses GitHub Actions to automatically build and publish packages:
 | `Dockerfile` | Alpine-based build environment |
 | `.github/workflows/build.yml` | GitHub Actions CI/CD pipeline |
 | `patches/*.patch` | QEMU source patches |
-| `keys/qemu-builder.rsa.pub` | Public key for package verification |
+| `keys/signkey.rsa.pub` | Public key for package verification |
