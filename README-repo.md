@@ -57,13 +57,13 @@ The package is built with:
 Download the public key directly from the repository and install it into Alpine's trusted keys directory:
 
 ```bash
-sudo curl -fsSL https://glemsom.github.io/dkvm-qemu/signkey.rsa.pub -o /etc/apk/keys/signkey.rsa.pub
+wget -O /etc/apk/keys/signkey.rsa.pub https://glemsom.github.io/dkvm-qemu/signkey.rsa.pub
 ```
 
 Alternatively, if you have cloned this repository locally:
 
 ```bash
-sudo cp keys/signkey.rsa.pub /etc/apk/keys/
+cp keys/signkey.rsa.pub /etc/apk/keys/
 ```
 
 ### 2. Add the repository URL
