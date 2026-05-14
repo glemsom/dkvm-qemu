@@ -37,13 +37,13 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/home/builder/qemu \
             -v ${{ github.workspace }}/repo/x86_64:/out \
+            -v ${{ github.workspace }}/keys/signkey.rsa.pub:/etc/apk/keys/signkey.rsa.pub:ro \
             -e SIGNING_PRIVATE_KEY="${{ secrets.SIGNING_PRIVATE_KEY }}" \
             --user root \
             qemu-apk-builder sh -c "
               mkdir -p /out /home/builder/.abuild && \
               echo \"\$SIGNING_PRIVATE_KEY\" > /home/builder/.abuild/signkey.rsa && \
               chmod 600 /home/builder/.abuild/signkey.rsa && \
-              cp /home/builder/qemu/keys/signkey.rsa.pub /home/builder/.abuild/signkey.rsa.pub && \
               echo \"PACKAGER_PRIVKEY=/home/builder/.abuild/signkey.rsa\" > /home/builder/.abuild/abuild.conf && \
               chown -R builder:abuild /home/builder/qemu /out /home/builder/.abuild && \
               HOME=/home/builder sudo -u builder sh -c 'cd /home/builder/qemu && abuild -r' && \
