@@ -42,7 +42,7 @@ jobs:
               mkdir -p /home/builder/qemu /out && \
               (cd /src && tar cf - --exclude=keys .) | (cd /home/builder/qemu && tar xf -) && \
               chown -R builder:abuild /home/builder/qemu /out && \
-              HOME=/home/builder sudo -u builder sh -c 'cd /home/builder/qemu && abuild' && \
+              HOME=/home/builder sudo -u builder sh -c 'cd /home/builder/qemu && abuild -r' && \
               find /home/builder/packages -name '*.apk' -exec cp {} /out/ \;
             "
           echo "APK packages built:"
