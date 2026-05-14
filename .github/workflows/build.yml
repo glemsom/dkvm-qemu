@@ -35,13 +35,16 @@ jobs:
       - name: Build APK packages
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}:/src:ro \
+            -v ${{ github.workspace }}:/home/builder/qemu \
             -v ${{ github.workspace }}/repo/x86_64:/out \
+            -e SIGNING_PRIVATE_KEY="${{ secrets.SIGNING_PRIVATE_KEY }}" \
             --user root \
             qemu-apk-builder sh -c "
-              mkdir -p /home/builder/qemu /out && \
-              (cd /src && tar cf - --exclude=keys .) | (cd /home/builder/qemu && tar xf -) && \
-              chown -R builder:abuild /home/builder/qemu /out && \
+              mkdir -p /out /home/builder/.abuild && \
+              echo \"\$SIGNING_PRIVATE_KEY\" > /home/builder/.abuild/signkey.rsa && \
+              chmod 600 /home/builder/.abuild/signkey.rsa && \
+              echo \"PACKAGER_PRIVKEY=/home/builder/.abuild/signkey.rsa\" > /home/builder/.abuild/abuild.conf && \
+              chown -R builder:abuild /home/builder/qemu /out /home/builder/.abuild && \
               HOME=/home/builder sudo -u builder sh -c 'cd /home/builder/qemu && abuild -r' && \
               find /home/builder/packages -name '*.apk' -exec cp {} /out/ \;
             "
