@@ -58,7 +58,11 @@ jobs:
               apk add --no-cache alpine-sdk && \
               cd /repo && \
               apk --allow-untrusted index *.apk -o APKINDEX.tar.gz && \
-              PACKAGER_PRIVKEY=/keys/signkey.rsa abuild-sign APKINDEX.tar.gz
+              echo "--- Validating signing key ---" && \
+              if [ ! -f /keys/signkey.rsa ]; then echo "::error::Private key not found at /keys/signkey.rsa"; exit 1; fi && \
+              if ! openssl rsa -in /keys/signkey.rsa -check -noout 2>&1; then echo "::error::Invalid or passphrase-protected RSA private key"; exit 1; fi && \
+              echo "--- Signing key is valid ---" && \
+              abuild-sign -k /keys/signkey.rsa APKINDEX.tar.gz
             "
           cp keys/signkey.rsa.pub repo/
 
