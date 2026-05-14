@@ -71,7 +71,7 @@ cp keys/signkey.rsa.pub /etc/apk/keys/
 Add the repository to `/etc/apk/repositories`:
 
 ```bash
-echo "https://glemsom.github.io/dkvm-qemu/" >> /etc/apk/repositories
+echo "https://glemsom.github.io/dkvm-qemu/x86_64" >> /etc/apk/repositories
 ```
 
 ### 3. Install packages
