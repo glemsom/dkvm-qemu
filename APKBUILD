@@ -51,6 +51,7 @@ source="https://download.qemu.org/qemu-$pkgver.tar.xz
 	patches/musl-initialise-msghdr.patch
 	patches/fix-strerrorname_np.patch
 	patches/liburing.patch
+	bridge.conf
 	"
 
 # secfixes:
@@ -215,13 +216,16 @@ package() {
 _system_x86_64() {
 	pkgdesc="QEMU x86_64 system emulator"
 	options=""
-	depends=""
+	depends="$pkgname"
 
 	amove usr/bin/qemu-system-x86_64
 	amove usr/share/qemu/edk2-x86_64-*code.fd \
 		usr/share/qemu/firmware/50-edk2-x86_64-secure.json \
 		usr/share/qemu/firmware/60-edk2-x86_64.json \
 		usr/share/qemu/edk2-i386-vars.fd
+
+	# Install bridge.conf with proper permissions
+	install -Dm640 -o root -g qemu "$srcdir"/bridge.conf "$subpkgdir"/etc/qemu/bridge.conf
 }
 
 sha512sums="
@@ -236,4 +240,5 @@ b9a4dba94785823cba3c06bd5cd5eb7be8e63509bbde0b334610b3d2c1a5d58a0d7059115c17ca15
 7a6340df8aa28811af20cd23b98ba95fc8072d4d4d3a2d497604386396892cf26716d0755821e47d02c8eded203133d7dde100537c117e2a047179e4f93883cf  musl-initialise-msghdr.patch
 7df4b0979d11fb0b7d2dbb073d7249677b0f51381dfbeb1bec2e44d29dd6e1d752468d7f9fb5b42deed6bdf184e81358e7b6dc54b36db326f3336cd6121a1a60  fix-strerrorname_np.patch
 75979455abcd9d9f25a966d829d578a06691163e297247c045ce67f94ebc916850b7be1080024a9db6bba9e3f7b88a8cc486f364fb7b028804862bc8634f00e4  liburing.patch
+749efa2e764006555b4fd3a8e2f6d1118ad2ea4d45acf99104a41a93cfe66dc9685f72027c17d8211e5716246c2a52322c962cf4b73b27541b69393cd57f53bb  bridge.conf
 "
