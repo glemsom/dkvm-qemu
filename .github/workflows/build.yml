@@ -28,6 +28,15 @@ jobs:
         run: |
           echo "${{ secrets.SIGNING_PRIVATE_KEY }}" > keys/signkey.rsa
           chmod 600 keys/signkey.rsa
+          if [ ! -s keys/signkey.rsa ]; then
+            echo "::error::SIGNING_PRIVATE_KEY secret is empty"
+            exit 1
+          fi
+          if ! openssl rsa -in keys/signkey.rsa -check -noout 2>&1; then
+            echo "::error::SIGNING_PRIVATE_KEY is not a valid RSA private key"
+            exit 1
+          fi
+          echo "Signing key verified OK"
 
       - name: Build Docker image
         run: docker build -t qemu-apk-builder .
@@ -59,16 +68,28 @@ jobs:
             -v ${{ github.workspace }}/repo/x86_64:/repo \
             -v ${{ github.workspace }}/keys:/keys:ro \
             alpine:3.23 sh -c "
-              apk update && \
-              apk add --no-cache alpine-sdk && \
-              cd /repo && \
-              apk --allow-untrusted index *.apk -o APKINDEX.tar.gz && \
-              echo "--- Validating signing key ---" && \
-              if [ ! -f /keys/signkey.rsa ]; then echo "::error::Private key not found at /keys/signkey.rsa"; exit 1; fi && \
-              if ! openssl rsa -in /keys/signkey.rsa -check -noout 2>&1; then echo "::error::Invalid or passphrase-protected RSA private key"; exit 1; fi && \
-              echo "--- Signing key is valid ---" && \
-              abuild-sign -k /keys/signkey.rsa APKINDEX.tar.gz && \
+              set -e
+              apk update >/dev/null 2>&1
+              apk add --no-cache alpine-sdk >/dev/null 2>&1
+              cd /repo
+
+              echo 'Creating APKINDEX...'
+              apk --allow-untrusted index *.apk -o APKINDEX.tar.gz
+
+              echo 'Signing APKINDEX...'
+              abuild-sign -k /keys/signkey.rsa APKINDEX.tar.gz
+
+              echo 'Verifying signature...'
+              if tar -tzf APKINDEX.tar.gz | grep -q '\.SIGN\.RSA\.'; then
+                echo 'APKINDEX.tar.gz is signed:'
+                tar -tzf APKINDEX.tar.gz
+              else
+                echo 'ERROR: APKINDEX.tar.gz is NOT signed!'
+                exit 1
+              fi
+
               cp /keys/signkey.rsa.pub /repo/signkey.rsa.pub
+              echo 'Repository ready.'
             "
 
       - name: Setup Pages
