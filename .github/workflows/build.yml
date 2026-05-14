@@ -35,7 +35,6 @@ jobs:
       - name: Build APK packages
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}/keys:/home/builder/.abuild \
             -v ${{ github.workspace }}:/src:ro \
             -v ${{ github.workspace }}/repo/x86_64:/out \
             --user root \
@@ -43,8 +42,7 @@ jobs:
               mkdir -p /home/builder/qemu /out && \
               (cd /src && tar cf - --exclude=keys .) | (cd /home/builder/qemu && tar xf -) && \
               chown -R builder:abuild /home/builder/qemu /out && \
-              cp /home/builder/.abuild/signkey.rsa.pub /etc/apk/keys/signkey.rsa.pub && \
-              HOME=/home/builder sudo -u builder sh -c 'cd /home/builder/qemu && PACKAGER_PRIVKEY=/home/builder/.abuild/signkey.rsa abuild' && \
+              HOME=/home/builder sudo -u builder sh -c 'cd /home/builder/qemu && abuild' && \
               find /home/builder/packages -name '*.apk' -exec cp {} /out/ \;
             "
           echo "APK packages built:"
