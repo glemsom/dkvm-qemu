@@ -68,8 +68,7 @@ jobs:
               if ! openssl rsa -in /keys/signkey.rsa -check -noout 2>&1; then echo "::error::Invalid or passphrase-protected RSA private key"; exit 1; fi && \
               echo "--- Signing key is valid ---" && \
               abuild-sign -k /keys/signkey.rsa APKINDEX.tar.gz && \
-              cp /keys/signkey.rsa.pub /repo/signkey.rsa.pub && \
-              cp /keys/signkey.rsa.pub /repo/../signkey.rsa.pub
+              cp /keys/signkey.rsa.pub /repo/signkey.rsa.pub
             "
 
       - name: Setup Pages
