@@ -46,7 +46,7 @@ jobs:
               chmod 600 /home/builder/.abuild/signkey.rsa && \
               cp /home/builder/qemu/keys/signkey.rsa.pub /home/builder/.abuild/signkey.rsa.pub && \
               echo \"PACKAGER_PRIVKEY=/home/builder/.abuild/signkey.rsa\" > /home/builder/.abuild/abuild.conf && \
-              chown -R builder:abuild /home/builder/qemu /out /home/builder/.abuild && \
+              chown -R builder:abuild /home/builder/qemu /home/builder/.abuild && \
               HOME=/home/builder sudo -u builder sh -c 'cd /home/builder/qemu && abuild -r' && \
               find /home/builder/packages -name '*.apk' -exec cp {} /out/ \;
             "
