@@ -26,10 +26,8 @@ jobs:
 
       - name: Setup signing key
         run: |
-          mkdir -p keys
           echo "${{ secrets.SIGNING_PRIVATE_KEY }}" > keys/signkey.rsa
           chmod 600 keys/signkey.rsa
-          openssl rsa -in keys/signkey.rsa -pubout > keys/signkey.rsa.pub 2>/dev/null
 
       - name: Build Docker image
         run: docker build -t qemu-apk-builder .
