@@ -67,9 +67,9 @@ jobs:
               if [ ! -f /keys/signkey.rsa ]; then echo "::error::Private key not found at /keys/signkey.rsa"; exit 1; fi && \
               if ! openssl rsa -in /keys/signkey.rsa -check -noout 2>&1; then echo "::error::Invalid or passphrase-protected RSA private key"; exit 1; fi && \
               echo "--- Signing key is valid ---" && \
-              abuild-sign -k /keys/signkey.rsa APKINDEX.tar.gz
+              abuild-sign -k /keys/signkey.rsa APKINDEX.tar.gz && \
+              cp /keys/signkey.rsa.pub /repo/signkey.rsa.pub
             "
-          cp keys/signkey.rsa.pub repo/x86_64/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
