@@ -54,7 +54,13 @@ The package is built with:
 
 ### 1. Import the signing key
 
-Copy the public key to Alpine's trusted keys directory:
+Download the public key directly from the repository and install it into Alpine's trusted keys directory:
+
+```bash
+sudo curl -fsSL https://glemsom.github.io/dkvm-qemu/signkey.rsa.pub -o /etc/apk/keys/signkey.rsa.pub
+```
+
+Alternatively, if you have cloned this repository locally:
 
 ```bash
 sudo cp keys/signkey.rsa.pub /etc/apk/keys/
