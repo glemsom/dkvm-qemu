@@ -93,7 +93,6 @@ _subsystems="
 	i386
 	m68k
 	microblaze
-	microblazeel
 	mips
 	mipsel
 	or1k
@@ -107,7 +106,6 @@ _subsystems="
 	system-i386
 	system-m68k
 	system-microblaze
-	system-microblazeel
 	system-mips
 	system-mipsel
 	system-or1k
