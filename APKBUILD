@@ -461,8 +461,8 @@ package() {
 
 	# Do not install HTML docs.
 	rm -rf "$pkgdir"/usr/share/doc
-	# remove accel-qtest-* modules, not needed for package
-	rm -f "$pkgdir"/usr/lib/qemu/accel-qtest-*
+	# remove accel-qtest* modules, not needed for package
+	rm -f "$pkgdir"/usr/lib/qemu/accel-qtest*
 
 	install -Dm755 "$srcdir"/$pkgname-guest-agent.initd \
 		"$pkgdir"/etc/init.d/$pkgname-guest-agent
