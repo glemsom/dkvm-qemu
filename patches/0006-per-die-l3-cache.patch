@@ -143,10 +143,12 @@ No guest-visible CPUID changes yet.
  typedef struct BitProperty {
      FeatureWord w;
      uint64_t mask;
-@@ -10785,6 +10874,23 @@
+@@ -10785,5 +10874,22 @@
      DEFINE_PROP_BOOL("x-pdcm-on-even-without-pmu", X86CPU,
                       pdcm_on_even_without_pmu, false),
      DEFINE_PROP_BOOL("x-force-cpuid-0x80000026", X86CPU, force_cpuid_0x80000026,
+-                     false),
++                     false),
 +    /* Per-die L3 cache configuration */
 +    DEFINE_PROP_UINT32("l3-cache-size-die0", X86CPU, l3_cache_size_die[0], 0),
 +    DEFINE_PROP_UINT32("l3-cache-size-die1", X86CPU, l3_cache_size_die[1], 0),
@@ -164,9 +166,8 @@ No guest-visible CPUID changes yet.
 +    DEFINE_PROP_UINT8("l3-cache-assoc-die5", X86CPU, l3_cache_assoc_die[5], 0),
 +    DEFINE_PROP_UINT8("l3-cache-assoc-die6", X86CPU, l3_cache_assoc_die[6], 0),
 +    DEFINE_PROP_UINT8("l3-cache-assoc-die7", X86CPU, l3_cache_assoc_die[7], 0),
-                      false),
  };
- 
+
 @@ -10905,6 +11011,7 @@
      .instance_align = __alignof(X86CPU),
      .instance_init = x86_cpu_initfn,

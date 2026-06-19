@@ -1,0 +1,72 @@
+--- a/target/i386/cpu.c	2026-06-19 15:59:15.260501430 +0200
+Subject: [PATCH 0007/0007] per-die L3 CPUID encode for all L3 leaves
+
+Add per-die L3 cache selection at all CPUID encode sites that report
+L3 cache info. At each site, extract die_id from vCPU's APIC ID using
+x86_topo_ids_from_apicid(), select the per-die L3 CPUCacheInfo from
+env->l3_cache_per_die[die_id], and fall back to the model/host default
+if no per-die override exists for that die.
+
+Affected leaves:
+- CPUID[4] leaf 3 (Intel-style cache info)
+- CPUID[0x80000006].EDX (legacy AMD L3 cache info)
+- CPUID[0x8000001D] leaf 3 (AMD extended cache topology)
+
+---
+
++++ b/target/i386/cpu.c	2026-06-19 15:59:58.230062815 +0200
+@@ -8678,7 +8678,12 @@
+                 break;
+             case 3: /* L3 cache info */
+                 if (cpu->enable_l3_cache) {
+-                    encode_cache_cpuid4(caches->l3_cache, topo_info,
++                    X86CPUTopoIDs topo_ids;
++                    CPUCacheInfo *l3;
++                    x86_topo_ids_from_apicid(cpu->apic_id, topo_info, &topo_ids);
++                    l3 = env->l3_cache_per_die[topo_ids.die_id]
++                         ?: caches->l3_cache;
++                    encode_cache_cpuid4(l3, topo_info,
+                                         eax, ebx, ecx, edx);
+                     break;
+                 }
+@@ -9106,10 +9111,16 @@
+                (X86_ENC_ASSOC(L2_ITLB_4K_ASSOC) << 12) |
+                (L2_ITLB_4K_ENTRIES);
+ 
+-        encode_cache_cpuid80000006(caches->l2_cache,
+-                                   cpu->enable_l3_cache ?
+-                                   caches->l3_cache : NULL,
+-                                   ecx, edx);
++        {
++            CPUCacheInfo *l3 = NULL;
++            if (cpu->enable_l3_cache) {
++                X86CPUTopoIDs topo_ids;
++                x86_topo_ids_from_apicid(cpu->apic_id, topo_info, &topo_ids);
++                l3 = env->l3_cache_per_die[topo_ids.die_id]
++                     ?: caches->l3_cache;
++            }
++            encode_cache_cpuid80000006(caches->l2_cache, l3, ecx, edx);
++        }
+         break;
+     }
+     case 0x80000007:
+@@ -9189,8 +9200,15 @@
+                                        topo_info, eax, ebx, ecx, edx);
+             break;
+         case 3: /* L3 cache info */
+-            encode_cache_cpuid8000001d(env->cache_info.l3_cache,
+-                                       topo_info, eax, ebx, ecx, edx);
++            {
++                X86CPUTopoIDs topo_ids;
++                CPUCacheInfo *l3;
++                x86_topo_ids_from_apicid(cpu->apic_id, topo_info, &topo_ids);
++                l3 = env->l3_cache_per_die[topo_ids.die_id]
++                     ?: env->cache_info.l3_cache;
++                encode_cache_cpuid8000001d(l3,
++                                           topo_info, eax, ebx, ecx, edx);
++            }
+             break;
+         default: /* end of info */
+             *eax = *ebx = *ecx = *edx = 0;
+-- 
+2.43.0
