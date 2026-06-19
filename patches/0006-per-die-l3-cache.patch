@@ -1,0 +1,177 @@
+--- a/target/i386/cpu.h	2026-06-19 15:59:15.259425189 +0200
+Subject: [PATCH 0006/0006] per-die L3 cache foundation (properties, storage, realize init, finalize)
+
+Add CPU properties `l3-cache-size-die<N>` and `l3-cache-assoc-die<N>` (N=0..7)
+for configuring per-die L3 cache parameters. Store overrides in a new
+`l3_cache_per_die[MAX_DIES]` array on CPUX86State. Initialize at realize
+time by cloning model's L3 CPUCacheInfo and overriding size/associativity.
+
+Validation:
+- Per-die property + l3-cache=off → error
+- Die index >= topology die count → warn, ignore
+
+Free allocated structs in instance finalize.
+
+No guest-visible CPUID changes yet.
+---
+
++++ b/target/i386/cpu.h	2026-06-19 15:59:23.070296303 +0200
+@@ -2242,6 +2242,9 @@
+      * with old QEMU versions.
+      */
+     CPUCaches cache_info;
++    /* Per-die L3 cache overrides. NULL = use model default for this die. */
++#define MAX_DIES 8
++    CPUCacheInfo *l3_cache_per_die[MAX_DIES];
+     bool enable_legacy_cpuid2_cache;
+     bool enable_legacy_vendor_cache;
+ 
+@@ -2372,6 +2375,11 @@
+     /* if true the CPUID code directly forward host cache leaves to the guest */
+     bool cache_info_passthrough;
+ 
++    /* Per-die L3 cache size in bytes, 0 = use model default */
++    uint32_t l3_cache_size_die[MAX_DIES];
++    /* Per-die L3 cache associativity, 0 = use model default */
++    uint8_t l3_cache_assoc_die[MAX_DIES];
++
+     /* if true the CPUID code directly forwards
+      * host monitor/mwait leaves to the guest */
+     struct {
+--- a/target/i386/cpu.c	2026-06-19 15:59:15.260501430 +0200
++++ b/target/i386/cpu.c	2026-06-19 15:59:58.230062815 +0200
+@@ -10236,6 +10236,83 @@
+             env->cache_info = legacy_intel_cache_info;
+         }
+     }
++    /* Per-die L3 cache initialization */
++    {
++        int die;
++        bool has_per_die_prop = false;
++
++        for (die = 0; die < MAX_DIES; die++) {
++            if (cpu->l3_cache_size_die[die] || cpu->l3_cache_assoc_die[die]) {
++                has_per_die_prop = true;
++                break;
++            }
++        }
++
++        if (has_per_die_prop) {
++            if (!cpu->enable_l3_cache) {
++                error_setg(errp, "per-die L3 cache properties require l3-cache=on");
++                return;
++            }
++
++            for (die = 0; die < MAX_DIES; die++) {
++                if (!cpu->l3_cache_size_die[die] && !cpu->l3_cache_assoc_die[die]) {
++                    continue;
++                }
++
++#ifndef CONFIG_USER_ONLY
++                if (die >= env->topo_info.dies_per_pkg) {
++                    warn_report("l3-cache-size-die%d: die index >= topology die count (%u), ignoring",
++                                die, env->topo_info.dies_per_pkg);
++                    continue;
++                }
++#endif
++
++                {
++                    CPUCacheInfo *l3;
++                    const CPUCaches *model_cache;
++
++                    model_cache = xcc->model
++                        ? x86_cpu_get_versioned_cache_info(cpu, xcc->model)
++                        : NULL;
++
++                    if (model_cache && model_cache->l3_cache) {
++                        /* Clone model's L3 cache info */
++                        l3 = g_malloc(sizeof(*l3));
++                        memcpy(l3, model_cache->l3_cache, sizeof(*l3));
++                    } else {
++                        /* Fallback: hardcoded Zen5 defaults (passthrough mode) */
++                        l3 = g_malloc0(sizeof(*l3));
++                        l3->type = DATA_CACHE;
++                        l3->level = 3;
++                        l3->line_size = 64;
++                        l3->associativity = 16;
++                        l3->partitions = 1;
++                        l3->lines_per_tag = 1;
++                        l3->self_init = true;
++                        l3->no_invd_sharing = true;
++                        l3->inclusive = false;
++                        l3->complex_indexing = false;
++                        l3->share_level = CPU_TOPOLOGY_LEVEL_DIE;
++                    }
++
++                    /* Override size from property */
++                    if (cpu->l3_cache_size_die[die]) {
++                        l3->size = cpu->l3_cache_size_die[die];
++                    }
++
++                    /* Override associativity from property */
++                    if (cpu->l3_cache_assoc_die[die]) {
++                        l3->associativity = cpu->l3_cache_assoc_die[die];
++                    }
++
++                    /* Recalculate sets */
++                    l3->sets = l3->size / (l3->line_size * l3->associativity * l3->partitions);
++
++                    env->l3_cache_per_die[die] = l3;
++                }
++            }
++        }
++    }
+ 
+ #ifndef CONFIG_USER_ONLY
+     MachineState *ms = MACHINE(qdev_get_machine());
+@@ -10297,6 +10374,18 @@
+     xcc->parent_unrealize(dev);
+ }
+ 
++static void x86_cpu_finalizefn(Object *obj)
++{
++    X86CPU *cpu = X86_CPU(obj);
++    CPUX86State *env = &cpu->env;
++    int die;
++
++    for (die = 0; die < MAX_DIES; die++) {
++        g_free(env->l3_cache_per_die[die]);
++        env->l3_cache_per_die[die] = NULL;
++    }
++}
++
+ typedef struct BitProperty {
+     FeatureWord w;
+     uint64_t mask;
+@@ -10785,6 +10874,23 @@
+     DEFINE_PROP_BOOL("x-pdcm-on-even-without-pmu", X86CPU,
+                      pdcm_on_even_without_pmu, false),
+     DEFINE_PROP_BOOL("x-force-cpuid-0x80000026", X86CPU, force_cpuid_0x80000026,
++    /* Per-die L3 cache configuration */
++    DEFINE_PROP_UINT32("l3-cache-size-die0", X86CPU, l3_cache_size_die[0], 0),
++    DEFINE_PROP_UINT32("l3-cache-size-die1", X86CPU, l3_cache_size_die[1], 0),
++    DEFINE_PROP_UINT32("l3-cache-size-die2", X86CPU, l3_cache_size_die[2], 0),
++    DEFINE_PROP_UINT32("l3-cache-size-die3", X86CPU, l3_cache_size_die[3], 0),
++    DEFINE_PROP_UINT32("l3-cache-size-die4", X86CPU, l3_cache_size_die[4], 0),
++    DEFINE_PROP_UINT32("l3-cache-size-die5", X86CPU, l3_cache_size_die[5], 0),
++    DEFINE_PROP_UINT32("l3-cache-size-die6", X86CPU, l3_cache_size_die[6], 0),
++    DEFINE_PROP_UINT32("l3-cache-size-die7", X86CPU, l3_cache_size_die[7], 0),
++    DEFINE_PROP_UINT8("l3-cache-assoc-die0", X86CPU, l3_cache_assoc_die[0], 0),
++    DEFINE_PROP_UINT8("l3-cache-assoc-die1", X86CPU, l3_cache_assoc_die[1], 0),
++    DEFINE_PROP_UINT8("l3-cache-assoc-die2", X86CPU, l3_cache_assoc_die[2], 0),
++    DEFINE_PROP_UINT8("l3-cache-assoc-die3", X86CPU, l3_cache_assoc_die[3], 0),
++    DEFINE_PROP_UINT8("l3-cache-assoc-die4", X86CPU, l3_cache_assoc_die[4], 0),
++    DEFINE_PROP_UINT8("l3-cache-assoc-die5", X86CPU, l3_cache_assoc_die[5], 0),
++    DEFINE_PROP_UINT8("l3-cache-assoc-die6", X86CPU, l3_cache_assoc_die[6], 0),
++    DEFINE_PROP_UINT8("l3-cache-assoc-die7", X86CPU, l3_cache_assoc_die[7], 0),
+                      false),
+ };
+ 
+@@ -10905,6 +11011,7 @@
+     .instance_align = __alignof(X86CPU),
+     .instance_init = x86_cpu_initfn,
+     .instance_post_init = x86_cpu_post_initfn,
++    .instance_finalize = x86_cpu_finalizefn,
+ 
+     .abstract = true,
+     .class_size = sizeof(X86CPUClass),

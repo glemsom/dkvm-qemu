@@ -1,0 +1,53 @@
+FROM alpine:3.24
+
+RUN apk update && apk add --no-cache \
+    alpine-sdk bash sudo \
+    alsa-lib-dev attr-dev bison capstone-dev curl-dev \
+    dtc-dev flex glib-dev glib-static gnutls-dev lvm2-dev \
+    gtk+3.0-dev cyrus-sasl-dev libaio-dev libjpeg-turbo-dev \
+    libpng-dev libseccomp-dev libslirp-dev libssh-dev \
+    liburing-dev libusb-dev linux-headers lzo-dev meson ninja \
+    numactl-dev perl pinentry pipewire-dev python3 sdl2-dev \
+    snappy-dev spice-dev sudo util-linux-dev vde2-dev \
+    usbredir-dev zlib-dev zlib-static zstd-dev \
+    libbpf-dev libcap-dev libcap-ng-dev \
+    libnfs-dev libxml2-dev ncurses-dev \
+    pcre2-static pulseaudio-dev py3-sphinx py3-sphinx_rtd_theme \
+    texinfo virglrenderer-dev vte3-dev xfsprogs-dev \
+    coreutils \
+    && rm -rf /var/cache/apk/*
+
+# Download QEMU source
+ARG QEMU_VERSION=11.0.1
+RUN wget -q https://download.qemu.org/qemu-$QEMU_VERSION.tar.xz -O /tmp/qemu.tar.xz \
+    && mkdir -p /build/qemu \
+    && tar xf /tmp/qemu.tar.xz -C /build/qemu --strip-components=1 \
+    && rm /tmp/qemu.tar.xz
+
+WORKDIR /build
+COPY patches/ /build/patches/
+RUN set -e; \
+    for p in /build/patches/000*.patch; do \
+        echo "Applying $(basename $p)"; \
+        patch -p1 -d /build/qemu < "$p"; \
+    done
+
+WORKDIR /build/qemu
+RUN mkdir -p /build/out
+
+# Build only x86_64-softmmu target with KVM support
+RUN ./configure \
+    --target-list=x86_64-softmmu \
+    --enable-kvm \
+    --disable-werror \
+    --disable-debug-info \
+    --disable-bsd-user \
+    --disable-linux-user \
+    --python=/usr/bin/python3 \
+    --disable-docs \
+    --cc=gcc \
+    && make -j$(nproc) \
+    && cp build/qemu-system-x86_64 /build/out/
+
+ENV PATH=/build/out:$PATH
+CMD ["/bin/bash"]

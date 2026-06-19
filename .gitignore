@@ -13,6 +13,9 @@ __pycache__/
 *.so
 
 # IDE
+
+# Dev build output
+build/
 .idea/
 .vscode/
 *.swp

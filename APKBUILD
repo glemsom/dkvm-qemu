@@ -239,6 +239,7 @@ source="https://download.qemu.org/qemu-$pkgver.tar.xz
 	patches/0003-epyc-vcpu.patch
 	patches/0004-bus-lock-detect.patch
 	patches/0005-bus-lock-detect-epyc.patch
+	patches/0006-per-die-l3-cache.patch
 	0006-linux-user-signal.c-define-__SIGRTMIN-MAX-for-non-GN.patch
 	xattr_size_max.patch
 	MAP_SYNC-fix.patch
