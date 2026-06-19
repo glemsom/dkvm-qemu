@@ -1,0 +1,80 @@
+Subject: [PATCH 0008/0008] per-die L3 passthrough mode support
+
+When cache_info_passthrough=true (-cpu host), check for per-die L3
+overrides at each CPUID encode site before falling back to
+x86_cpu_get_cache_cpuid(). If a per-die override exists for the
+current vCPU's die, use encode_cache_cpuid*() with the override.
+
+Affected leaves:
+- CPUID[4] leaf 3 (Intel-style cache info): use encode_cache_cpuid4()
+- CPUID[0x80000006].EDX (legacy AMD L3): call x86_cpu_get_cache_cpuid()
+  for host TLB/L2, then override EDX with per-die L3 encoding
+- CPUID[0x8000001D] leaf 3 (AMD extended cache topo): use
+  encode_cache_cpuid8000001d()
+
+Dies without per-die overrides continue to use x86_cpu_get_cache_cpuid()
+as before (passthrough behavior unchanged).
+
+---
+
+diff --git a/target/i386/cpu.c b/target/i386/cpu.c
+index abcdef1..fedcba9 100644
+--- a/target/i386/cpu.c
++++ b/target/i386/cpu.c
+@@ -8634,6 +8634,17 @@
+ 
+         /* cache info: needed for Core compatibility */
+         if (cpu->cache_info_passthrough) {
++            if (count == 3 && cpu->enable_l3_cache) {
++                X86CPUTopoIDs topo_ids;
++                CPUCacheInfo *l3;
++                x86_topo_ids_from_apicid(cpu->apic_id, topo_info, &topo_ids);
++                l3 = env->l3_cache_per_die[topo_ids.die_id];
++                if (l3) {
++                    encode_cache_cpuid4(l3, topo_info,
++                                        eax, ebx, ecx, edx);
++                    break;
++                }
++            }
+             x86_cpu_get_cache_cpuid(index, count, eax, ebx, ecx, edx);
+             /*
+              * QEMU has its own number of cores/logical cpus,
+@@ -9090,7 +9101,20 @@
+         }
+ 
+         if (cpu->cache_info_passthrough) {
++            CPUCacheInfo *l3_override = NULL;
++            if (cpu->enable_l3_cache) {
++                X86CPUTopoIDs topo_ids;
++                x86_topo_ids_from_apicid(cpu->apic_id, topo_info, &topo_ids);
++                l3_override = env->l3_cache_per_die[topo_ids.die_id];
++            }
+             x86_cpu_get_cache_cpuid(index, 0, eax, ebx, ecx, edx);
++            if (l3_override) {
++                /* Override L3 in EDX; keep host TLB/L2 in EAX/EBX/ECX */
++                *edx = ((l3_override->size / (512 * 1024)) << 18) |
++                       (X86_ENC_ASSOC(l3_override->associativity) << 12) |
++                       (l3_override->lines_per_tag << 8) |
++                       (l3_override->line_size);
++            }
+             break;
+         }
+ 
+@@ -9183,6 +9207,17 @@
+     case 0x8000001D:
+         *eax = 0;
+         if (cpu->cache_info_passthrough) {
++            if (count == 3 && cpu->enable_l3_cache) {
++                X86CPUTopoIDs topo_ids;
++                CPUCacheInfo *l3;
++                x86_topo_ids_from_apicid(cpu->apic_id, topo_info, &topo_ids);
++                l3 = env->l3_cache_per_die[topo_ids.die_id];
++                if (l3) {
++                    encode_cache_cpuid8000001d(l3, topo_info,
++                                               eax, ebx, ecx, edx);
++                    break;
++                }
++            }
+             x86_cpu_get_cache_cpuid(index, count, eax, ebx, ecx, edx);
+             break;
+         }

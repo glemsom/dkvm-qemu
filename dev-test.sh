@@ -87,5 +87,66 @@ else
     echo "  SKIP (no KVM)"
 fi
 
+echo "=== Test 6: Passthrough mode (host-cache-info=on) + per-die properties ==="
+OUT=$(qmp_test "{ 'execute': 'qmp_capabilities' }
+{ 'execute': 'query-cpu-model-expansion', 'arguments': { 'type': 'static', 'model': { 'name': 'EPYC-Turin', 'props': { 'host-cache-info': true, 'l3-cache-size-die1': 100663296 } } } }
+{ 'execute': 'quit' }")
+if echo "$OUT" | grep -q '"return"'; then
+    pass "Passthrough mode + per-die properties works"
+else
+    fail "Passthrough mode + per-die properties failed: $(echo "$OUT" | head -3)"
+fi
+
+echo "=== Test 7: Passthrough mode + l3-cache=off + per-die property → error ==="
+OUT=$(run_pc -cpu "EPYC-Turin,host-cache-info=on,l3-cache=off,l3-cache-size-die1=100663296")
+if echo "$OUT" | grep -qi "per-die.*l3-cache=on"; then
+    pass "Passthrough mode + l3-cache=off + per-die property produces error"
+else
+    fail "Passthrough mode + l3-cache=off + per-die property did NOT produce error"
+    echo "Output: $(echo "$OUT" | tail -3)"
+    fi
+
+echo "=== Test 8: Passthrough mode multi-die SMP ==="
+OUT=$(run_pc -cpu "EPYC-Turin,host-cache-info=on,l3-cache-size-die1=100663296" -smp 4,dies=2,cores=2,threads=1 -qmp stdio 2>/dev/null <<< "{ 'execute': 'qmp_capabilities' }
+{ 'execute': 'quit' }" || true)
+if echo "$OUT" | grep -q '"return"'; then
+    pass "Passthrough mode + multi-die SMP works"
+else
+    fail "Passthrough mode + multi-die SMP failed: $(echo "$OUT" | head -3)"
+fi
+
+echo "=== Test 9: Passthrough mode without per-die properties (regression) ==="
+OUT=$(qmp_test "{ 'execute': 'qmp_capabilities' }
+{ 'execute': 'query-cpu-model-expansion', 'arguments': { 'type': 'static', 'model': { 'name': 'EPYC-Turin', 'props': { 'host-cache-info': true } } } }
+{ 'execute': 'quit' }")
+if echo "$OUT" | grep -q '"return"'; then
+    pass "Passthrough mode without per-die properties works"
+else
+    fail "Passthrough mode without per-die properties failed: $(echo "$OUT" | head -3)"
+fi
+
+echo "=== Test 10: Passthrough VM boot (KVM required) ==="
+if $CAN_KVM; then
+    # Boot with -cpu host, per-die property for die1, verify no crash
+    OUT=$(timeout 15 "$QEMU_BIN" -machine pc -cpu "host,l3-cache-size-die1=100663296" -smp 4,dies=2,cores=2,threads=1 -S -display none -qmp stdio 2>/dev/null <<< "{ 'execute': 'qmp_capabilities' }
+    { 'execute': 'quit' }" || true)
+    if echo "$OUT" | grep -q '"return"'; then
+        pass "Passthrough VM boot with per-die L3 works"
+    else
+        fail "Passthrough VM boot with per-die L3 failed: $(echo "$OUT" | head -3)"
+    fi
+    
+    # Boot without per-die properties, verify no change
+    OUT=$(timeout 15 "$QEMU_BIN" -machine pc -cpu host -smp 4,dies=2,cores=2,threads=1 -S -display none -qmp stdio 2>/dev/null <<< "{ 'execute': 'qmp_capabilities' }
+    { 'execute': 'quit' }" || true)
+    if echo "$OUT" | grep -q '"return"'; then
+        pass "Passthrough VM boot without per-die L3 works"
+    else
+        fail "Passthrough VM boot without per-die L3 failed: $(echo "$OUT" | head -3)"
+    fi
+        else
+    echo "  SKIP (no KVM)"
+fi
+
 echo "=== Results: $PASS passed, $FAIL failed ==="
 [ $FAIL -eq 0 ] && exit 0 || exit 1
