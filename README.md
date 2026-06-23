@@ -44,21 +44,20 @@ All features are configured via CPU properties on the `-cpu` flag.
 #### Per-die asymmetric L3 cache (model mode)
 
 ```sh
-# EPYC-Turin, 2 dies, die0=32MB, die1=96MB
--cpu EPYC-Turin,l3-cache-size-die0=32M,l3-cache-size-die1=96M \
+# EPYC-Turin, 2 dies, die0=32MB (33554432), die1=96MB (100663296)
+-cpu EPYC-Turin,l3-cache-size-die0=33554432,l3-cache-size-die1=100663296 \
   -smp 16,dies=2,cores=8,threads=1
 
 # With associativity override for 3D V-Cache
--cpu EPYC-Turin,l3-cache-size-die1=96M,l3-cache-assoc-die1=12 \
+-cpu EPYC-Turin,l3-cache-size-die1=100663296,l3-cache-assoc-die1=12 \
   -smp 16,dies=2,cores=8,threads=1
 ```
 
 #### Per-die asymmetric L3 cache (host passthrough mode)
 
 ```sh
-# Host passthrough, override die1 L3 to 96MB (9950X3D simulation)
--cpu host,l3-cache-size-die1=96M \
-  -smp 16,dies=2,cores=8,threads=1
+# Host passthrough, override die1 L3 to 96MB (100663296) (9950X3D simulation)
+-cpu host,l3-cache-size-die1=100663296 \
 
 # Passthrough without per-die props → pure host passthrough, no change
 -cpu host
@@ -68,10 +67,9 @@ All features are configured via CPU properties on the `-cpu` flag.
 
 ```sh
 # Error: per-die property requires l3-cache=on
--cpu EPYC-Turin,l3-cache=off,l3-cache-size-die0=32M
-
+-cpu EPYC-Turin,l3-cache=off,l3-cache-size-die0=33554432
 # Warning: die index 3 exceeds 2-die topology (ignored)
--cpu EPYC-Turin,l3-cache-size-die3=96M -smp 8,dies=2,cores=4
+-cpu EPYC-Turin,l3-cache-size-die3=100663296 -smp 8,dies=2,cores=4
 ```
 
 ### Test
