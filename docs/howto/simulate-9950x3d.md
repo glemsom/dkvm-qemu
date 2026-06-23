@@ -58,7 +58,7 @@ The 3D V-Cache die may use different associativity. To match the 9950X3D:
 
 ```bash
 build/out/qemu-system-x86_64 \
-  -cpu EPYC-Turin,l3-cache-size-die0=33554432,l3-cache-size-die1=100663096,l3-cache-assoc-die1=12 \
+  -cpu EPYC-Turin,l3-cache-size-die0=33554432,l3-cache-size-die1=100663296,l3-cache-assoc-die1=12 \
   -smp 16,dies=2,cores=8,threads=1 \
   -m 4G \
   -display none
