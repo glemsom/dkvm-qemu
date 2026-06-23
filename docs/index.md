@@ -13,7 +13,7 @@ Documentation organized by the [Diátaxis](https://diataxis.fr/) framework.
 | **How-to** | [Testing](howto/testing.md) | Users & contributors | Run and write tests |
 | **How-to** | [Adding the APK Repo](../README-repo.md#adding-the-repository) | Alpine sysadmins | Install custom QEMU packages |
 | **How-to** | [Contributing](../CONTRIBUTING.md) | Developers | Submit patches, run tests |
-| **How-to** | [Local APK Build](../build-local.sh) | Packagers | Build signed APK packages locally |
+| **How-to** | [Local APK Build](howto/build-apk-locally.md) | Packagers | Build signed APK packages locally |
 | **Reference** | [CPU Properties](reference/cpu-properties.md) | QEMU users | Custom CPU property reference |
 | **Reference** | [Patches Overview](reference/patches.md) | Developers | Patch list, files, purpose |
 | **Reference** | [Patch Dependencies](reference/patch-dependencies.md) | Developers | Dependency chain & interactions |
@@ -47,7 +47,6 @@ Documentation organized by the [Diátaxis](https://diataxis.fr/) framework.
 dkvm-qemu/
 ├── README.md              # Main project landing page
 ├── README-repo.md         # Alpine repo docs — install, CI/CD
-├── CONTEXT.md             # Redirect → glossary.md and ADR-0001
 ├── CONTRIBUTING.md        # How to contribute
 ├── docs/
 │   ├── index.md           # This page
