@@ -3,7 +3,9 @@
 > **Documentation:** See [docs/index.md](docs/index.md) for a full doc map.
 > **Alpine repo:** See [README-repo.md](README-repo.md) for package installation.
 > **Contributing:** See [CONTRIBUTING.md](CONTRIBUTING.md).
-> **Tutorial:** [Getting Started](docs/tutorial/getting-started.md).
+> **Tutorials:**
+> - [Getting Started](docs/tutorial/getting-started.md) — build from source
+> - [Install via APK](docs/tutorial/install-via-apk.md) — pre-built packages
 
 Custom QEMU (11.0.1) build with patches for AMD EPYC/Ryzen virtualization
 — die-topology CPUID, bus-lock detection, and **per-die asymmetric L3 cache**

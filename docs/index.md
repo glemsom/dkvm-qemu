@@ -6,10 +6,12 @@ Documentation organized by the [Diátaxis](https://diataxis.fr/) framework.
 
 | Quadrant | Document | Audience | Goal |
 |----------|----------|----------|------|
-| **Tutorial** | [Getting Started](tutorial/getting-started.md) | New users | First successful build & VM boot |
+| **Tutorial** | [Getting Started](tutorial/getting-started.md) | Developers | First successful build & VM boot |
+| **Tutorial** | [Install via APK](tutorial/install-via-apk.md) | Alpine users | Install pre-built DKVM QEMU |
 | **How-to** | [QEMU Flags](howto/qemu-flags.md) | QEMU users | Build, CPU properties, per-die L3, validation |
 | **How-to** | [Simulate 9950X3D](howto/simulate-9950x3d.md) | QEMU users | Step-by-step 9950X3D VM configuration |
 | **How-to** | [Debug Per-Die L3](howto/debug-per-die-l3.md) | QEMU users | Troubleshoot asymmetric L3 configuration |
+| **How-to** | [libvirt Integration](howto/libvirt-integration.md) | QEMU users | Use per-die L3 cache with libvirt |
 | **How-to** | [Testing](howto/testing.md) | Users & contributors | Run and write tests |
 | **How-to** | [Adding the APK Repo](../README-repo.md#adding-the-repository) | Alpine sysadmins | Install custom QEMU packages |
 | **How-to** | [Contributing](../CONTRIBUTING.md) | Developers | Submit patches, run tests |
@@ -31,12 +33,14 @@ Documentation organized by the [Diátaxis](https://diataxis.fr/) framework.
 - [Simulate 9950X3D](howto/simulate-9950x3d.md) — Step-by-step 9950X3D VM configuration
 - [Testing](howto/testing.md) — Run and write tests
 - [Debug Per-Die L3](howto/debug-per-die-l3.md) — Troubleshooting guide
+- [libvirt Integration](howto/libvirt-integration.md) — Use per-die L3 with libvirt
 - [CPU Properties](reference/cpu-properties.md) — Custom CPU property reference
 - [Patches Overview](reference/patches.md) — Patch list, files, purpose
 - [Patch Dependencies](reference/patch-dependencies.md) — Dependency chain & interactions
 - [Architecture](explanation/architecture.md) — Per-die L3 design & data flow
 - [AMD Die Topology](explanation/amd-die-topology.md) — AMD chiplet arch and 3D V-Cache
 - [CPUID Cache Encoding](explanation/cpuid-cache-encoding.md) — CPUID leaf encoding details
+- [Build APK Locally](howto/build-apk-locally.md) — Build signed APK packages locally
 - [README-repo.md](../README-repo.md) — Alpine package repository docs
 - [Glossary](reference/glossary.md) — Domain terminology
 - [ADR-0001](adr/0001-per-die-asymmetric-l3-cache.md) — Design decisions and trade-offs
@@ -51,12 +55,15 @@ dkvm-qemu/
 ├── docs/
 │   ├── index.md           # This page
 │   ├── tutorial/
-│   │   └── getting-started.md
+│   │   ├── getting-started.md
+│   │   └── install-via-apk.md
 │   ├── howto/
 │   │   ├── qemu-flags.md           # Build & -cpu flags usage
 │   │   ├── simulate-9950x3d.md     # 9950X3D VM configuration
 │   │   ├── debug-per-die-l3.md     # Troubleshoot asymmetric L3
-│   │   └── testing.md              # Run and write tests
+│   │   ├── libvirt-integration.md  # libvirt per-die L3 usage
+│   │   ├── testing.md              # Run and write tests
+│   │   └── build-apk-locally.md     # Build signed APK locally
 │   ├── explanation/
 │   │   ├── architecture.md         # Per-die L3 design & data flow
 │   │   ├── amd-die-topology.md     # AMD chiplet arch, 3D V-Cache

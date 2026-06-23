@@ -114,48 +114,17 @@ Validation rules enforced at realize time:
 
 ## Data Flow: CPUID Dispatch Time
 
-At guest CPUID execution, each of three encode sites follows the same selection pattern:
+At guest CPUID execution, each of three encode sites selects the correct
+L3 `CPUCacheInfo` using the per-die array. The dispatch logic — including
+the ternary selection pattern, passthrough pre-check, and leaf-specific
+handling — is documented in the
+[CPUID Cache Encoding](cpuid-cache-encoding.md) document.
 
-```
-1. Extract die_id:
-   x86_topo_ids_from_apicid(cpu->apic_id, topo_info, &topo_ids)
-   die_id = topo_ids.die_id
+All three encode sites (CPUID[4] leaf 3, CPUID[0x80000006],
+CPUID[0x8000001D] leaf 3) follow the same selection pattern, implemented
+in patches 0007 and 0008.
 
-2. Select L3 CPUCacheInfo:
-   l3 = env->l3_cache_per_die[die_id] ?: caches->l3_cache
-                                                  │
-                              (per-die override)   │   (model default)
-                                             │    │
-3. Call encode function with selected l3 ───┘    │
-                                             ┌────┘
-                                             ↓
-                              encode_cache_cpuid4()
-                              encode_cache_cpuid80000006()
-                              encode_cache_cpuid8000001d()
-```
-
-The ternary `?:` operator means:
-- If `l3_cache_per_die[die_id]` is non-NULL → use the override
-- If NULL → fall back to the model's uniform L3 (original behaviour)
-
-### Passthrough Pre-Check
-
-In passthrough mode, the same three sites get a pre-check before the normal `x86_cpu_get_cache_cpuid()` passthrough path:
-
-```
-CPUID leaf L3 encode request (passthrough mode)
-        │
-        ├── Per-die override exists for this die_id?
-        │      YES → call encode_cache_cpuid*() with override
-        │             (skip host passthrough for this leaf)
-        │
-        └── NO → fall through to x86_cpu_get_cache_cpuid()
-                  (read real hardware CPUID)
-```
-
-For the legacy leaf 0x80000006: the host's L2 TLB/L2 cache info is read first, then only the EDX register (L3 portion) is overridden with the per-die encoding. This preserves the host's L2 data.
-
----
+c2d|---
 
 ## Memory Management
 
