@@ -1,5 +1,11 @@
 # DKVM QEMU — Asymmetric Cache Topology & AMD EPYC Patches
 
+> **Documentation:** See [docs/index.md](docs/index.md) for a full doc map.
+> **Alpine repo:** See [README-repo.md](README-repo.md) for package installation.
+> **Contributing:** See [CONTRIBUTING.md](CONTRIBUTING.md).
+> **Tutorial:** [Getting Started](docs/tutorial/getting-started.md).
+
+
 Custom QEMU (11.0.1) build with patches for AMD EPYC/Ryzen virtualization — die-topology CPUID, bus-lock detect, and per-die asymmetric L3 cache support (9950X3D simulation).
 
 ## Patches Overview
