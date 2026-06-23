@@ -146,52 +146,16 @@ NULL.
 
 ### Dataflow Diagram
 
-```mermaid
-flowchart TD
-    subgraph Model["CPU Model Definition"]
-        L3_model["CPUCaches.l3_cache<br/>(uniform, model-defined)"]
-    end
+See the high-level data flow diagram in
+[Architecture: Per-Die Asymmetric L3 Cache](architecture.md)
+— the "Design Overview" section shows the end-to-end flow from CLI
+properties through realize-time construction to CPUID dispatch.
 
-    subgraph Properties["CPU Properties (CLI)"]
-        Props["l3-cache-size-die0..7<br/>l3-cache-assoc-die0..7"]
-    end
+The per-die selection at CPUID dispatch time (the `l3_cache_per_die[die_id] ?:
+caches->l3_cache` pattern) is the same at all three encode sites, as
+shown in the architecture document.
 
-    subgraph Realize["x86_cpu_realizefn()"]
-        Init["For each die with a property set:"]
-        Clone["g_malloc + memcpy(model L3)"]
-        Override["Override size/assoc from property<br/>Recalculate sets"]
-        Store["env->l3_cache_per_die[N] = ptr"]
-        Init --> Clone --> Override --> Store
-    end
-
-    subgraph CPUID["CPUID Dispatch (target/i386/cpu.c)"]
-        direction LR
-        ApicId["cpu->apic_id"]
-        TopoInfo["topo_info"]
-        Func["x86_topo_ids_from_apicid()"]
-        ApicId --> Func
-        TopoInfo --> Func
-        Func --> die_id["die_id"]
-
-        die_id --> Select["env->l3_cache_per_die[die_id]"]
-        Select --> Branch{"Non-NULL?"}
-        Branch -->|Yes| PerDie["Use per-die CPUCacheInfo"]
-        Branch -->|No  | Default["Use model uniform L3"]
-    end
-
-    subgraph EncodeSites["CPUID Encode Sites"]
-        Leaf4["CPUID[4] leaf 3<br/>encode_cache_cpuid4()"]
-        Leaf8006["CPUID[0x80000006].EDX<br/>encode_cache_cpuid80000006()"]
-        Leaf8001d["CPUID[0x8000001D] leaf 3<br/>encode_cache_cpuid8000001d()"]
-    end
-
-    Props --> Init
-    L3_model --> Clone
-    PerDie --> EncodeSites
-    Default --> EncodeSites
-```
-
----
+c2d|---
 
 ## Passthrough Mode (`host-cache-info=on`)
 
