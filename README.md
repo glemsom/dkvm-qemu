@@ -5,7 +5,20 @@
 > **Contributing:** See [CONTRIBUTING.md](CONTRIBUTING.md).
 > **Tutorial:** [Getting Started](docs/tutorial/getting-started.md).
 
-Custom QEMU (11.0.1) build with patches for AMD EPYC/Ryzen virtualization — die-topology CPUID, bus-lock detect, and per-die asymmetric L3 cache support (9950X3D simulation).
+Custom QEMU (11.0.1) build with patches for AMD EPYC/Ryzen virtualization
+— die-topology CPUID, bus-lock detection, and **per-die asymmetric L3 cache**
+support (simulate Ryzen 9950X3D in VMs).
+
+## Quick Start (build from source)
+
+```bash
+git clone https://github.com/glemsom/dkvm-qemu.git
+cd dkvm-qemu
+./dev-build.sh
+./dev-test.sh build/out/qemu-system-x86_64
+```
+
+Or [install via APK](docs/tutorial/install-via-apk.md) (Alpine Linux).
 
 ## Quick Reference
 
