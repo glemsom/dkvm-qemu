@@ -64,8 +64,10 @@ When adding a new feature:
 
 When adding or changing features, update:
 
-- `README.md` — patch table and usage sections
-- `CONTEXT.md` — domain terms and design decisions
+- `docs/reference/patches.md` — patch table (add new patch rows)
+- `docs/howto/qemu-flags.md` — usage examples and flags
+- `README.md` — top-level description and quick reference
+- `docs/reference/glossary.md` — domain terms
 - `docs/adr/` — new ADR if the change has architectural significance
 - This is a small project — keep docs concise but complete
 
