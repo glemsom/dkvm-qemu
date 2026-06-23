@@ -103,6 +103,7 @@ cpuid -1 | grep -A 10 "L3"
 ## What's next?
 
 - [QEMU Flags](../howto/qemu-flags.md) — all CPU properties and flags
+- [Simulate 9950X3D](../howto/simulate-9950x3d.md) — step-by-step 9950X3D VM configuration
 - [Domain Glossary](../reference/glossary.md) — domain terminology
 - [Architecture Decision Record](../adr/0001-per-die-asymmetric-l3-cache.md) — why things are designed this way
 - [Contributing](../CONTRIBUTING.md) — how to submit patches

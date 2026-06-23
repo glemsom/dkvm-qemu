@@ -59,6 +59,8 @@ All features are configured via CPU properties on the `-cpu` flag.
 
 ## Test
 
+For a full 9950X3D simulation walkthrough, see [Simulate 9950X3D](simulate-9950x3d.md).
+
 See [Testing](testing.md) for the test suite guide.
 
 The test suite verifies:

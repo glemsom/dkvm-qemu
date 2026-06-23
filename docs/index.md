@@ -8,6 +8,7 @@ Documentation organized by the [Diátaxis](https://diataxis.fr/) framework.
 |----------|----------|----------|------|
 | **Tutorial** | [Getting Started](tutorial/getting-started.md) | New users | First successful build & VM boot |
 | **How-to** | [QEMU Flags](howto/qemu-flags.md) | QEMU users | Build, CPU properties, per-die L3, validation |
+| **How-to** | [Simulate 9950X3D](howto/simulate-9950x3d.md) | QEMU users | Step-by-step 9950X3D VM configuration |
 | **How-to** | [Debug Per-Die L3](howto/debug-per-die-l3.md) | QEMU users | Troubleshoot asymmetric L3 configuration |
 | **How-to** | [Testing](howto/testing.md) | Users & contributors | Run and write tests |
 | **How-to** | [Adding the APK Repo](../README-repo.md#adding-the-repository) | Alpine sysadmins | Install custom QEMU packages |
@@ -27,6 +28,7 @@ Documentation organized by the [Diátaxis](https://diataxis.fr/) framework.
 
 - [README.md](../README.md) — Main project overview and quick reference
 - [QEMU Flags](howto/qemu-flags.md) — Build and `-cpu` flags usage
+- [Simulate 9950X3D](howto/simulate-9950x3d.md) — Step-by-step 9950X3D VM configuration
 - [Testing](howto/testing.md) — Run and write tests
 - [Debug Per-Die L3](howto/debug-per-die-l3.md) — Troubleshooting guide
 - [CPU Properties](reference/cpu-properties.md) — Custom CPU property reference
@@ -53,6 +55,7 @@ dkvm-qemu/
 │   │   └── getting-started.md
 │   ├── howto/
 │   │   ├── qemu-flags.md           # Build & -cpu flags usage
+│   │   ├── simulate-9950x3d.md     # 9950X3D VM configuration
 │   │   ├── debug-per-die-l3.md     # Troubleshoot asymmetric L3
 │   │   └── testing.md              # Run and write tests
 │   ├── explanation/
