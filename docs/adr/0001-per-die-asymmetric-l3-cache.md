@@ -14,7 +14,12 @@ Accepted
 
 - **Clone model L3 + override** vs full geometry specification: Clone+override avoids CLI verbosity for the common case (same µarch, different capacity). Optional `l3-cache-assoc-die<N>` covers the 3D V-Cache associativity case.
 
-- **Single patch** vs split into preparation + feature: Single patch — cohesive change, easy to revert as a unit.
+- **Split into multiple patches** vs single patch: **Split chosen** — three patches for reviewability and independent understanding:
+  - `0006-per-die-l3-cache.patch`: Foundation — properties, storage, realize init/finalize.
+  - `0007-per-die-l3-cpuid-encode.patch`: Model-mode CPUID encode at all 3 L3 encode sites.
+  - `0008-per-die-l3-passthrough.patch`: Host passthrough-mode CPUID encode at same sites.
+  
+  Split improves reviewability and lets each patch be understood independently. Reverting one aspect does not require reverting all. (See [patch-dependencies.md](../reference/patch-dependencies.md) for dependency details.)
 
 ## Consequences
 
