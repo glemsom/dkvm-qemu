@@ -14,7 +14,7 @@ A uniform offset doesn't solve it: setting the model L3 to 32 MB under-reports t
 
 ## Design Overview
 
-The solution adds CPU properties (`l3-cache-size-die<N>`, `l3-cache-assoc-die<N>`) that let users specify per-die L3 overrides. These are stored separately from the model's uniform cache and selected at CPUID encode time based on the vCPU's die ID.
+The solution adds CPU properties (`l3-cache-size-die<N>`, `l3-cache-assoc-die<N>`) that let users specify per-die L3 overrides. These are stored separately from the model's uniform cache and selected at CPUID encode time based on the vCPU's die ID. The per-die selection logic at CPUID dispatch — the ternary pattern, APIC ID→die_id mapping, and passthrough pre-checks — is documented in detail in [CPUID Cache Encoding](cpuid-cache-encoding.md).
 
 ```
 CLI properties ──→ Realize: clone model L3, apply overrides ──→ l3_cache_per_die[]
@@ -114,15 +114,13 @@ Validation rules enforced at realize time:
 
 ## Data Flow: CPUID Dispatch Time
 
-At guest CPUID execution, each of three encode sites selects the correct
-L3 `CPUCacheInfo` using the per-die array. The dispatch logic — including
-the ternary selection pattern, passthrough pre-check, and leaf-specific
-handling — is documented in the
-[CPUID Cache Encoding](cpuid-cache-encoding.md) document.
+At guest CPUID execution, the per-die selection logic — ternary pattern,
+passthrough pre-check, and leaf-specific handling — is documented in
+[CPUID Cache Encoding](cpuid-cache-encoding.md).
 
-All three encode sites (CPUID[4] leaf 3, CPUID[0x80000006],
-CPUID[0x8000001D] leaf 3) follow the same selection pattern, implemented
-in patches 0007 and 0008.
+All three encode sites use the same `l3_cache_per_die[die_id] ?:
+caches->l3_cache` selection pattern, implemented in patches 0007
+(model mode) and 0008 (passthrough mode).
 
 c2d|---
 

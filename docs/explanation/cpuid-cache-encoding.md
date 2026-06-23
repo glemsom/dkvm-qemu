@@ -1,17 +1,11 @@
 # CPUID Cache Topology Encoding — Per-Die L3 Design
 
-## Overview
+For the problem statement, high-level design rationale, and architecture data
+flow, see [Architecture: Per-Die Asymmetric L3 Cache](architecture.md).
 
-QEMU reports cache information to x86 guests through multiple CPUID leaves.
-The guest OS queries these leaves during boot to discover the cache hierarchy
-— size, associativity, line size, sharing topology — and uses that
-information to optimize scheduling, page coloring, and NUMA decisions.
-
-In a standard QEMU CPU model, the cache topology is **uniform**: every
-vCPU sees the same L3 parameters from the model definition. The per-die
-asymmetric L3 patches break that uniformity by letting each die within a
-package report different L3 cache geometry. This document explains how
-QEMU's CPUID cache encoding works and how the patches modify it.
+This document covers the technical CPUID-level encoding details: how each
+leaf reports L3 cache geometry, the per-die selection mechanism at code
+level, APIC ID to die-id mapping, and passthrough pre-check logic.
 
 All relevant source lives in `target/i386/cpu.c` and `target/i386/cpu.h`.
 
@@ -89,16 +83,8 @@ iterates by `count`; `count == 3` is L3.
 
 ## How Per-Die Selection Works
 
-The selection logic follows the same pattern at all three encode sites:
-
-```
-APIC ID → x86_topo_ids_from_apicid() → die_id → l3_cache_per_die[die_id] → use if non-NULL
-                                                                           ↓
-                                                                    fall back to model default
-```
-
-At each encode site, before calling the encode function, the patch
-inserts:
+At each of the three CPUID encode sites, the patch inserts a selection
+that resolves the correct L3 `CPUCacheInfo` from the vCPU's die:
 
 ```c
 X86CPUTopoIDs topo_ids;
@@ -112,48 +98,35 @@ model uniform `caches->l3_cache`. If no per-die override exists for
 that die (the array slot is NULL), the ternary operator falls back to the
 model default — exactly the original behaviour.
 
-### The `x86_topo_ids_from_apicid()` Function
-
-Defined in `target/i386/cpu.c` (upstream QEMU). It decomposes a vCPU's
-APIC ID into topology components based on the topology mask configured
-in `X86CPUTopoInfo`:
-
-```c
-void x86_topo_ids_from_apicid(apic_id, topo_info, topo_ids);
-```
-
-- **Input**: vCPU APIC ID (`cpu->apic_id`), topology description
-  (`topo_info`, which encodes bits-per-socket, bits-per-die,
-  bits-per-core, etc.)
-- **Output**: `X86CPUTopoIDs` struct with fields `pkg_id`, `die_id`,
-  `module_id`, `core_id`, `smtsibling_id`
-- **Relevance**: The `die_id` field indexes into
-  `env->l3_cache_per_die[MAX_DIES]`. This is how the patches map a vCPU
-  to its die's L3 cache override.
-
-APIC ID topology decoding depends on the CPUID[0x80000026] leaf being
-enabled (see patches 0001–0002). Without die topology awareness, every
-vCPU gets `die_id = 0` and per-die selection collapses to uniform.
-
-### The Per-Die Storage Array
-
-`CPUX86State.l3_cache_per_die[MAX_DIES]` is an array of 8 pointers (see
-`target/i386/cpu.h`). At realize time, for each die with a configured
-property, a `CPUCacheInfo` is heap-allocated, cloned from the model's L3
-(or from hardcoded Zen5 defaults in passthrough mode), overridden with
-property values, and stored in the array. Dies without properties remain
-NULL.
-
-### Dataflow Diagram
-
 See the high-level data flow diagram in
 [Architecture: Per-Die Asymmetric L3 Cache](architecture.md)
 — the "Design Overview" section shows the end-to-end flow from CLI
 properties through realize-time construction to CPUID dispatch.
 
-The per-die selection at CPUID dispatch time (the `l3_cache_per_die[die_id] ?:
-caches->l3_cache` pattern) is the same at all three encode sites, as
-shown in the architecture document.
+### APIC ID to Die-ID Mapping
+
+`x86_topo_ids_from_apicid()` (defined in `target/i386/cpu.c`, upstream
+QEMU) decomposes a vCPU's APIC ID into topology components based on
+`X86CPUTopoInfo`:
+
+- **Input**: vCPU APIC ID (`cpu->apic_id`), topology description
+  (`topo_info`, encoding bits-per-socket, bits-per-die,
+  bits-per-core, etc.)
+- **Output**: `X86CPUTopoIDs` struct with `pkg_id`, `die_id`,
+  `module_id`, `core_id`, `smtsibling_id`
+- **Relevance**: `die_id` indexes into
+  `env->l3_cache_per_die[MAX_DIES]`.
+
+APIC ID topology decoding depends on CPUID[0x80000026] being enabled
+(patches 0001–0002). Without die topology awareness, every vCPU gets
+`die_id = 0` and per-die selection collapses to uniform.
+
+### Per-Die Storage Array
+
+`CPUX86State.l3_cache_per_die[MAX_DIES]` is an array of 8 `CPUCacheInfo*`
+pointers (see `target/i386/cpu.h`). Dies without properties remain NULL.
+For realize-time allocation, clone, and override details, see
+"Data Flow: Realize Time" in [Architecture](architecture.md).
 
 c2d|---
 
