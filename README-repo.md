@@ -10,25 +10,26 @@ This repository automatically builds custom Alpine Linux packages for QEMU with 
 
 ## Repository Structure
 
-```
-.
-├── APKBUILD                    # Alpine package build definition
-├── patches/                    # Custom QEMU patches
-│   ├── 0001-CPUID.patch        # Extended CPU Topology (Fn80000026)
-│   ├── 0002-x-force-cpuid.patch
-│   ├── 0003-epyc-vcpu.patch    # EPYC vCPU optimizations
-│   ├── 0004-bus-lock-detect.patch
-│   ├── 0005-bus-lock-detect-epyc.patch
-│   └── ...                     # Additional patches
-├── keys/                       # Signing keys for repository
-│   └── signkey.rsa.pub           # Public key for package verification
-├── Dockerfile                  # Build environment container
-├── create-repo.sh              # Repository index creation and signing
-├── qemu.post-install           # Post-install script
-├── qemu.pre-install            # Pre-install script
-├── qemu.pre-upgrade            # Pre-upgrade script
-└── .github/workflows/          # GitHub Actions CI/CD
-    └── build.yml               # Build and publish workflow
+```mermaid
+graph TD
+    Root["."]
+    Root --> APKBUILD
+    Root --> patches["patches/"]
+    patches --> p1["0001-CPUID.patch"]
+    patches --> p2["0002-x-force-cpuid.patch"]
+    patches --> p3["0003-epyc-vcpu.patch"]
+    patches --> p4["0004-bus-lock-detect.patch"]
+    patches --> p5["0005-bus-lock-detect-epyc.patch"]
+    patches --> p_etc["..."]
+    Root --> keys["keys/"]
+    keys --> signkey["signkey.rsa.pub"]
+    Root --> Dockerfile
+    Root --> create_repo["create-repo.sh"]
+    Root --> qemu_post["qemu.post-install"]
+    Root --> qemu_pre["qemu.pre-install"]
+    Root --> qemu_pru["qemu.pre-upgrade"]
+    Root --> github[".github/workflows/"]
+    github --> build["build.yml"]
 ```
 
 ## Features

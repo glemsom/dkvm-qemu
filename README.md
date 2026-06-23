@@ -91,30 +91,15 @@ The test suite verifies:
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    A["CPU Properties<br/>l3-cache-size-die&lt;N&gt;<br/>l3-cache-assoc-die&lt;N&gt;"]
+    B["CPUX86State<br/>l3_cache_per_die[8]<br/>[0] → CPUCacheInfo*<br/>[1] → CPUCacheInfo*<br/>...<br/>NULL = model default"]
+    C["CPUID Encode Sites<br/>├─ CPUID[4] leaf 3<br/>├─ 0x80000006.EDX<br/>└─ 0x8000001D leaf 3"]
+
+    A -->|realize-time| B
+    B -->|CPUID encode time| C
 ```
-                    ┌───────────────────────┐
-                    │   CPU Properties      │
-                    │ l3-cache-size-die<N>  │
-                    │ l3-cache-assoc-die<N> │
-                    └──────────┬───────────┘
-                               │ realize-time
-                               ▼
-                    ┌───────────────────────┐
-                    │  CPUX86State          │
-                    │  l3_cache_per_die[8]  │
-                    │  [0] → CPUCacheInfo*  │
-                    │  [1] → CPUCacheInfo*  │
-                    │  ...                  │
-                    │  NULL = model default │
-                    └──────────┬────────────┘
-                               │ CPUID encode time
-                               ▼
-                    ┌──────────────────────┐
-                    │  CPUID Encode Sites  │
-                    │  ├─ CPUID[4] leaf 3  │
-                    │  ├─ 0x80000006.EDX   │
-                    │  └─ 0x8000001D leaf 3│
-                    └──────────────────────┘
 ```
 
 Per-die L3 overrides are stored separately from the model's uniform `cache_info`. At CPUID encode, the vCPU's die ID is extracted from its APIC ID (`x86_topo_ids_from_apicid`) to select the correct L3 info. This design minimizes blast radius — only 3 CPUID encode sites need modification.
