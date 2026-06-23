@@ -36,7 +36,7 @@ The 9950X3D has 16 cores total across 2 dies, with asymmetric L3:
 |-----------|-------|-------|
 | Cores | 8 | 8 |
 | L3 cache | 32 MB | 96 MB |
-| L3 associativity | 16 | 12 (3D V-Cache) |
+| L3 associativity | 16 | 16 |
 
 ### Minimal QEMU command
 
@@ -54,11 +54,11 @@ This boots a VM where:
 
 ### With associativity override
 
-The 3D V-Cache die may use different associativity. To match the 9950X3D:
+Override associativity for a die. Example for a hypothetical non-default value:
 
 ```bash
 build/out/qemu-system-x86_64 \
-  -cpu EPYC-Turin,l3-cache-size-die0=33554432,l3-cache-size-die1=100663296,l3-cache-assoc-die1=12 \
+  -cpu EPYC-Turin,l3-cache-size-die0=33554432,l3-cache-size-die1=100663296,l3-cache-assoc-die1=16 \
   -smp 16,dies=2,cores=8,threads=1 \
   -m 4G \
   -display none
@@ -195,7 +195,7 @@ Use this on a real 9950X3D host to make the VM match the host's topology exactly
 | L3 cache (standard) | 32 MB | 32 MB |
 | 3D V-Cache | none | 64 MB stacked |
 | L3 total | 32 MB | 96 MB |
-| L3 associativity | 16-way | 12-way |
+| L3 associativity | 16-way | 16-way |
 | L3 line size | 64 B | 64 B |
 | CPUID family/model | 0x19 (Zen 5) | 0x19 (Zen 5) |
 
