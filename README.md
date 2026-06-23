@@ -92,26 +92,26 @@ The test suite verifies:
 ## Architecture
 
 ```
-                    ┌──────────────────────┐
-                    │   CPU Properties       │
+                    ┌───────────────────────┐
+                    │   CPU Properties      │
                     │ l3-cache-size-die<N>  │
                     │ l3-cache-assoc-die<N> │
                     └──────────┬───────────┘
                                │ realize-time
                                ▼
-                    ┌──────────────────────┐
+                    ┌───────────────────────┐
                     │  CPUX86State          │
                     │  l3_cache_per_die[8]  │
                     │  [0] → CPUCacheInfo*  │
                     │  [1] → CPUCacheInfo*  │
                     │  ...                  │
                     │  NULL = model default │
-                    └──────────┬───────────┘
+                    └──────────┬────────────┘
                                │ CPUID encode time
                                ▼
                     ┌──────────────────────┐
-                    │  CPUID Encode Sites   │
-                    │  ├─ CPUID[4] leaf 3   │
+                    │  CPUID Encode Sites  │
+                    │  ├─ CPUID[4] leaf 3  │
                     │  ├─ 0x80000006.EDX   │
                     │  └─ 0x8000001D leaf 3│
                     └──────────────────────┘
