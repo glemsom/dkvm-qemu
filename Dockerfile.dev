@@ -39,6 +39,7 @@ RUN mkdir -p /build/out
 RUN ./configure \
     --target-list=x86_64-softmmu \
     --enable-kvm \
+    --enable-libusb \
     --disable-werror \
     --disable-debug-info \
     --disable-bsd-user \

@@ -30,7 +30,7 @@ docker run --rm \
     sh -c "
         set -e
         cd /build/qemu
-        ./configure --target-list=x86_64-softmmu --enable-kvm --disable-werror \
+        ./configure --target-list=x86_64-softmmu --enable-kvm --enable-libusb --disable-werror \
             --disable-debug-info --disable-bsd-user --disable-linux-user \
             --python=/usr/bin/python3 --disable-docs --cc=gcc
         make -j\$(nproc)
