@@ -15,11 +15,8 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -92,26 +89,32 @@ jobs:
               echo 'Repository ready.'
             "
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './repo'
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
-        # Retry on transient Pages infrastructure failures
         continue-on-error: true
 
-      - name: Retry Deploy if needed
+      - name: Retry deploy if needed
         if: steps.deployment.outcome == 'failure' || steps.deployment.conclusion == 'failure'
         run: |
           echo "First deploy attempt failed, retrying after 30s..."
           sleep 30
-        
+
       - name: Deploy to GitHub Pages (retry)
         if: steps.deployment.outcome == 'failure' || steps.deployment.conclusion == 'failure'
         uses: actions/deploy-pages@v5
