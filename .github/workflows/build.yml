@@ -103,3 +103,15 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        # Retry on transient Pages infrastructure failures
+        continue-on-error: true
+
+      - name: Retry Deploy if needed
+        if: steps.deployment.outcome == 'failure' || steps.deployment.conclusion == 'failure'
+        run: |
+          echo "First deploy attempt failed, retrying after 30s..."
+          sleep 30
+        
+      - name: Deploy to GitHub Pages (retry)
+        if: steps.deployment.outcome == 'failure' || steps.deployment.conclusion == 'failure'
+        uses: actions/deploy-pages@v5
