@@ -15,43 +15,43 @@ CPUID leaves with the configured hv-vendor-id.
 Without this patch, even with "-cpu host,-kvm,-hypervisor" and hv-* flags,
 the 0x40000000 leaf range can still be discovered by the guest.
 
+Bugfix: simply guarding hyperv_init_vcpu() in kvm_arch_init_vcpu() with
+an !expose_kvm check caused an abort: the MSR setup in kvm_put_msrs()
+would still try to write Hyper-V MSRs (e.g. HV_X64_MSR_SVERSION at
+0x40000081) because cpu->hyperv_features was not cleared.  KVM would
+reject these writes since SynIC was never enabled, triggering an
+assertion failure.
+
+The fix clears cpu->hyperv_features alongside FEAT_KVM so that the
+entire Hyper-V code path is disabled consistently: hyperv_enabled()
+returns false, hyperv_init_vcpu() is never called, and kvm_put_msrs()
+skips all Hyper-V MSRs.
+
 ---
- target/i386/cpu.c    | 1 +
- target/i386/kvm/kvm.c | 8 ++++++++
- 2 files changed, 9 insertions(+)
+ target/i386/cpu.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/target/i386/cpu.c b/target/i386/cpu.c
 index abcdef1..1234567 100644
 --- a/target/i386/cpu.c
 +++ b/target/i386/cpu.c
-@@ -9762,6 +9762,7 @@
+@@ -9613,6 +9613,17 @@
  
      if (!kvm_enabled() || !cpu->expose_kvm) {
          env->features[FEAT_KVM] = 0;
 +        env->features[FEAT_1_ECX] &= ~CPUID_EXT_HYPERVISOR;
++
++        /*
++         * Clear all Hyper-V feature bits so that hyperv_enabled() returns
++         * false, preventing hyperv_init_vcpu() from being called and,
++         * most importantly, preventing kvm_put_msrs() from adding Hyper-V
++         * MSRs (e.g. HV_X64_MSR_SVERSION = 0x40000081) to the KVM MSR set.
++         */
++        cpu->hyperv_features = 0;
++        cpu->hyperv_passthrough = false;
++        cpu->hyperv_spinlock_attempts = HYPERV_SPINLOCK_NEVER_NOTIFY;
      }
  
      /*
-diff --git a/target/i386/kvm/kvm.c b/target/i386/kvm/kvm.c
-index abcdef2..2345678 100644
---- a/target/i386/kvm/kvm.c
-+++ b/target/i386/kvm/kvm.c
-@@ -2290,7 +2290,15 @@ int kvm_arch_init_vcpu(CPUState *cs)
-         return -ENOSYS;
-     }
-
--    if (hyperv_enabled(cpu)) {
-+    /*
-+     * When expose_kvm is disabled, suppress all Hyper-V CPUID leaves
-+     * (0x40000000 range) to fully hide the hypervisor presence.  Even
-+     * if hv-* flags are set, do not populate the 0x40000000 leaves
-+     * as they would reveal a hypervisor vendor ID (e.g. "dkvm") to the
-+     * guest.
-+     */
-+    if (hyperv_enabled(cpu) &&
-+        kvm_enabled() && cpu->expose_kvm) {
-         r = hyperv_init_vcpu(cpu);
-         if (r) {
-             return r;
 -- 
 2.43.0

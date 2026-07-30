@@ -1,0 +1,151 @@
+dkvmmanager 2026/07/30 18:10:41 [DEBUG] Debug mode enabled
+dkvmmanager 2026/07/30 18:10:41 [DEBUG] Terminal size: 100x37
+dkvmmanager 2026/07/30 18:10:41 [DEBUG] Starting TUI with debug=true, dryRun=false, testRun="", skipMountCheck=false
+dkvmmanager 2026/07/30 18:10:41 [DEBUG] MainModel created with 2 menu items
+dkvmmanager 2026/07/30 18:10:41 [DEBUG] Update received: tea.ColorProfileMsg
+dkvmmanager 2026/07/30 18:10:41 [DEBUG] Update received: tea.WindowSizeMsg
+dkvmmanager 2026/07/30 18:10:41 [DEBUG] Update received: tea.EnvMsg
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] Update received: tea.KeyPressMsg
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] handleVMSelection: CachyOS Gnome (VM)
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] VM starting async: CachyOS Gnome (ID: 0)
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] start script stdout: =========================================
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] start script stdout: AMD Ryzen Start Script
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] start script stdout: =========================================
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] start script stdout: Passthrough devices: 0000:03:00.0 0000:03:00.1 0000:05:00.0 0000:16:00.0
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] start script stdout: 
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] start script stdout: Detected VGA device: 0000:0000:03:00.0
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] start script stdout: Protecting iGPU from amdgpu driver...
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] start script stdout:   Protecting iGPU 0000:0000:7c:00.0 from amdgpu driver
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] start script stdout: Loading amdgpu kernel module
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:42 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] start script stdout: 
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] start script stdout: Step 1: Unbinding passthrough devices from current drivers
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] start script stdout: 
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] start script stdout: Step 2: Performing AMDGPU driver cycle for VGA device 0000:0000:03:00.0
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] start script stdout:   Loading amdgpu driver on 0000:0000:03:00.0
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] start script stdout: Binding driver 'amdgpu' to 0000:03:00.0
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:43 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:44 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:10:44 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:44 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:44 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:44 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:45 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:45 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:45 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:45 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:46 [DEBUG] start script stdout:   Unloading amdgpu driver from 0000:0000:03:00.0
+dkvmmanager 2026/07/30 18:10:46 [DEBUG] start script stdout: Unbinding driver 'amdgpu' from 0000:03:00.0
+dkvmmanager 2026/07/30 18:10:46 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:10:46 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:46 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:46 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:46 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:47 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:47 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:47 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:47 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:48 [DEBUG] start script stdout: 
+dkvmmanager 2026/07/30 18:10:48 [DEBUG] start script stdout: Step 3: Binding passthrough devices to vfio-pci
+dkvmmanager 2026/07/30 18:10:48 [DEBUG] start script stdout:   Binding vfio-pci to 0x1002:0x7550 (0000:03:00.0)
+dkvmmanager 2026/07/30 18:10:48 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:10:48 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:48 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:48 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:48 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:49 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:49 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:49 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:49 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:50 [DEBUG] start script stdout:   Binding vfio-pci to 0x1002:0xab40 (0000:03:00.1)
+dkvmmanager 2026/07/30 18:10:50 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:10:50 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:50 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:50 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:50 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:51 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:51 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:51 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:51 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:52 [DEBUG] start script stdout:   Binding vfio-pci to 0x1b21:0x2142 (0000:05:00.0)
+dkvmmanager 2026/07/30 18:10:52 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:10:52 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:52 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:52 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:52 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:53 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:53 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:53 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:53 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:54 [DEBUG] start script stdout:   Binding vfio-pci to 0x1022:0x43fd (0000:16:00.0)
+dkvmmanager 2026/07/30 18:10:54 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:10:54 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:54 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:54 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:54 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:55 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:55 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:55 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:55 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] start script stdout: 
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] start script stdout: =========================================
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] start script stdout: AMD Ryzen Start Script completed
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] start script stdout: =========================================
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] start script executed: /media/dkvmdata/amd_ryzen_start_stop.sh
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] QEMU command: /usr/bin/qemu-system-x86_64 -name CachyOS Gnome,debug-threads=on -nodefaults -no-user-config -accel kvm,kernel-irqchip=split -machine q35,mem-merge=off,vmport=off,dump-guest-core=off,memory-backend=mem -qmp unix:/tmp/dkvm-0.sock,server=on,wait=off -D /media/dkvmdata/vms/0/qemu-debug.log -overcommit mem-lock=on,cpu-pm=on -rtc base=utc,clock=vm,driftfix=slew -serial none -parallel none -netdev bridge,id=hostnet0,br=br0 -device virtio-net-pci,netdev=hostnet0,id=net0,mac=b2:fa:ff:5c:90:78 -object memory-backend-memfd,id=mem,size=57764M,hugetlb=on,hugetlbsize=2M,prealloc=on -global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 -global kvm-pit.lost_tick_policy=discard -device virtio-serial-pci,id=virtio-serial0 -chardev socket,id=guestagent,path=/tmp/qga.sock,server=on,wait=off -device virtserialport,chardev=guestagent,name=org.qemu.guest_agent.0 -boot menu=on,splash-time=5000 -fw_cfg opt/ovmf/X-PciMmio64Mb,string=65536 -nographic -vga none -smp 1,maxcpus=32,sockets=1,dies=2,cores=8,threads=2 -device host-x86_64-cpu,apic-id=1,socket-id=0,die-id=0,core-id=0,thread-id=1 -device host-x86_64-cpu,apic-id=2,socket-id=0,die-id=0,core-id=1,thread-id=0 -device host-x86_64-cpu,apic-id=3,socket-id=0,die-id=0,core-id=1,thread-id=1 -device host-x86_64-cpu,apic-id=4,socket-id=0,die-id=0,core-id=2,thread-id=0 -device host-x86_64-cpu,apic-id=5,socket-id=0,die-id=0,core-id=2,thread-id=1 -device host-x86_64-cpu,apic-id=6,socket-id=0,die-id=0,core-id=3,thread-id=0 -device host-x86_64-cpu,apic-id=7,socket-id=0,die-id=0,core-id=3,thread-id=1 -device host-x86_64-cpu,apic-id=8,socket-id=0,die-id=0,core-id=4,thread-id=0 -device host-x86_64-cpu,apic-id=9,socket-id=0,die-id=0,core-id=4,thread-id=1 -device host-x86_64-cpu,apic-id=10,socket-id=0,die-id=0,core-id=5,thread-id=0 -device host-x86_64-cpu,apic-id=11,socket-id=0,die-id=0,core-id=5,thread-id=1 -device host-x86_64-cpu,apic-id=12,socket-id=0,die-id=0,core-id=6,thread-id=0 -device host-x86_64-cpu,apic-id=13,socket-id=0,die-id=0,core-id=6,thread-id=1 -device host-x86_64-cpu,apic-id=14,socket-id=0,die-id=0,core-id=7,thread-id=0 -device host-x86_64-cpu,apic-id=15,socket-id=0,die-id=0,core-id=7,thread-id=1 -device host-x86_64-cpu,apic-id=16,socket-id=0,die-id=1,core-id=0,thread-id=0 -device host-x86_64-cpu,apic-id=17,socket-id=0,die-id=1,core-id=0,thread-id=1 -device host-x86_64-cpu,apic-id=18,socket-id=0,die-id=1,core-id=1,thread-id=0 -device host-x86_64-cpu,apic-id=19,socket-id=0,die-id=1,core-id=1,thread-id=1 -device host-x86_64-cpu,apic-id=20,socket-id=0,die-id=1,core-id=2,thread-id=0 -device host-x86_64-cpu,apic-id=21,socket-id=0,die-id=1,core-id=2,thread-id=1 -device host-x86_64-cpu,apic-id=22,socket-id=0,die-id=1,core-id=3,thread-id=0 -device host-x86_64-cpu,apic-id=23,socket-id=0,die-id=1,core-id=3,thread-id=1 -device host-x86_64-cpu,apic-id=24,socket-id=0,die-id=1,core-id=4,thread-id=0 -device host-x86_64-cpu,apic-id=25,socket-id=0,die-id=1,core-id=4,thread-id=1 -device host-x86_64-cpu,apic-id=26,socket-id=0,die-id=1,core-id=5,thread-id=0 -device host-x86_64-cpu,apic-id=27,socket-id=0,die-id=1,core-id=5,thread-id=1 -drive if=pflash,format=raw,readonly=on,file=/media/dkvmdata/vms/0/OVMF_CODE.fd -drive if=pflash,format=raw,file=/media/dkvmdata/vms/0/OVMF_VARS.fd -smbios type=0,vendor=American Megatrends International,, LLC.,version=4.20,date=04/16/2026 -smbios type=1,manufacturer=ASRock,product=X870E Taichi Lite,version=Default string,serial=Default string,uuid=84006b9c-dcd7-0000-0000-000000000000 -smbios type=2,manufacturer=ASRock,product=X870E Taichi Lite,version=Default string,serial=Default string -smbios type=3,manufacturer=Default string,version=Default string,serial=Default string,asset=Default string -acpitable file=/media/dkvmdata/vms/0/slic.dat -device virtio-scsi-pci,id=scsi -drive if=none,cache=none,aio=native,discard=unmap,detect-zeroes=unmap,format=raw,file=/dev/vg_nvme/lv-cachyos-gnome,id=drive0 -device scsi-hd,drive=drive0,vendor=ASRock,product=SSD 970 EVO Plus -device pcie-root-port,id=root_port1,slot=1,chassis=1 -device pcie-root-port,id=root_port2,slot=2,chassis=2 -device pcie-root-port,id=root_port3,slot=3,chassis=3 -device vfio-pci,host=0000:03:00.0,bus=root_port1,addr=00.0,multifunction=on -device vfio-pci,host=0000:03:00.1,bus=root_port1,addr=00.1 -device vfio-pci,host=0000:05:00.0,bus=root_port2,addr=00.0 -device vfio-pci,host=0000:16:00.0,bus=root_port3,addr=00.0 -device qemu-xhci -device usb-host,vendorid=0x3434,productid=0xd038 -device qemu-xhci -device usb-host,vendorid=0x3434,productid=0xd030 -cpu host,kvm=off,-hypervisor,hv-vendor-id=dkvm,+hv-frequencies,+hv-relaxed,+hv-runtime,+hv-stimer,+hv-synic,+hv-time,+hv-vapic,+hv-vpindex,hv-no-nonarch-coresharing=on,+hv-tlbflush,+hv-tlbflush-ext,+hv-ipi,+hv-avic,+topoext,l3-cache-size-die0=100663296,l3-cache-size-die1=33554432,l3-cache-assoc-die0=16,l3-cache-assoc-die1=16,migratable=no,+invtsc,x-force-cpuid-0x80000026=on
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] QEMU process started: PID=9722, socket=/tmp/dkvm-0.sock
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] Update received: models.VMStartedMsg
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:56 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:57 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:57 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:57 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:57 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:58 [DEBUG] QMP watchdog: QEMU running but QMP not yet connected (socket exists)
+dkvmmanager 2026/07/30 18:10:58 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:10:58 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:58 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:58 [DEBUG] [stderr] qemu-system-x86_64: -device vfio-pci,host=0000:03:00.0,bus=root_port1,addr=00.0,multifunction=on: warning: VFIO dma-buf not supported in kernel: PCI BAR IOMMU mappings may fail
+dkvmmanager 2026/07/30 18:10:58 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:58 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] [stderr] qemu-system-x86_64: error: failed to set MSR 0x40000081 to 0x1
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] [stderr] Assertion failed: ret == cpu->kvm_msr_buf->nmsrs (../target/i386/kvm/kvm.c: kvm_buf_set_msrs: 4138)
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] QMP negotiate attempt 2 failed: failed to read qmp_capabilities response: read unix @->/tmp/dkvm-0.sock: read: connection reset by peer
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: =========================================
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: AMD Ryzen Stop Script
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: =========================================
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: Passthrough devices: 0000:03:00.0 0000:03:00.1 0000:05:00.0 0000:16:00.0
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: 
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: Step 1: Unbinding devices from vfio-pci
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout:   Unbinding vfio-pci from 0000:03:00.0
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout:   Unbinding vfio-pci from 0000:03:00.1
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout:   Unbinding vfio-pci from 0000:05:00.0
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout:   Unbinding vfio-pci from 0000:16:00.0
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: 
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: Step 2: Cleaning up iGPU driver overrides
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout:   Releasing iGPU 0000:0000:7c:00.0 driver override
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: 
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: =========================================
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: AMD Ryzen Stop Script completed
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] stop script stdout: =========================================
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] QEMU process exited for VM CachyOS Gnome: signal: aborted
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:10:59 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:11:00 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:11:00 [DEBUG] Update received: models.VMStatusUpdateMsg
+dkvmmanager 2026/07/30 18:11:00 [DEBUG] QMP connect aborted: VM no longer running or process nil
+dkvmmanager 2026/07/30 18:11:02 [DEBUG] Update received: models.VMMetricsUpdateMsg
+dkvmmanager 2026/07/30 18:11:03 [DEBUG] Update received: tea.KeyPressMsg
+dkvmmanager 2026/07/30 18:11:03 [DEBUG] Update received: tea.KeyPressMsg
+dkvmmanager 2026/07/30 18:11:03 [DEBUG] Update received: models.VMRunningViewExitMsg
+dkvmmanager 2026/07/30 18:11:04 [DEBUG] Update received: tea.KeyPressMsg
