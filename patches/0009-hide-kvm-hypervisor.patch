@@ -2,41 +2,29 @@ From: QEMU Anti-Detection Patches
 Date: 2025
 Subject: [PATCH] target/i386: Hide KVM hypervisor presence when expose_kvm is disabled
 
-When the user sets "-cpu host,-kvm" (expose_kvm=false), hide all traces
-of KVM hypervisor from the guest:
+When the user sets "-cpu host,-kvm" (expose_kvm=false), also clear the
+CPUID[1].ECX[31] hypervisor bit.  The existing guard only cleared
+FEAT_KVM; the hypervisor bit in FEAT_1_ECX was left set from the
+unconditional set in x86_cpu_load_model() or from the host passthrough
+feature expansion.
 
-1. CPUID[1].ECX[31] (hypervisor bit) - don't set it when KVM is not exposed
-2. CPUID[0x40000000].ECX[30] (KVM signature detection) - already handled
-   by not injecting KVM leaves into KVM_SET_CPUID2
+Without this patch, even with "-cpu host,-kvm", CPUID[1].ECX[31] can
+still advertise the hypervisor bit.
 
-The EAC anti-cheat detection tool uses CPUID leaf 0x40000000.ECX[30] as
-its primary trigger. This is part of the "KVMKVMKVM\0\0\0" signature
-where ECX contains "VMKV". Bit 30 of this value is always 1 for KVM.
-
-Without these patches, even with "-cpu host,-kvm", CPUID[1].ECX[31] still
-advertises the hypervisor bit because it's unconditionally set in
-x86_cpu_expand_features().
+Note: Hyper-V CPUID leaves at 0x40000000 are NOT affected by this
+patch.  If the user enables hv-* flags, those leaves will still be
+present.  To hide them, remove hv-* flags or also disable them in
+the CPU model string.
 
 ---
- target/i386/cpu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ target/i386/cpu.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/target/i386/cpu.c b/target/i386/cpu.c
 index abcdef1..1234567 100644
 --- a/target/i386/cpu.c
 +++ b/target/i386/cpu.c
-@@ -8406,7 +8406,9 @@
-     /* legacy-cache defaults to 'off' if CPU model provides cache info */
-     cpu->legacy_cache = !x86_cpu_get_versioned_cache_info(cpu, model);
- 
--    env->features[FEAT_1_ECX] |= CPUID_EXT_HYPERVISOR;
-+    if (kvm_enabled() && cpu->expose_kvm) {
-+        env->features[FEAT_1_ECX] |= CPUID_EXT_HYPERVISOR;
-+    }
- 
-     /* sysenter isn't supported in compatibility mode on AMD,
-      * syscall isn't supported in compatibility mode on Intel.
-@@ -9762,6 +9764,7 @@
+@@ -9762,6 +9762,7 @@
  
      if (!kvm_enabled() || !cpu->expose_kvm) {
          env->features[FEAT_KVM] = 0;
