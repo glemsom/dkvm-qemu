@@ -3,8 +3,8 @@ Date: 2025
 Subject: [PATCH] target/i386: Hide KVM hypervisor presence when expose_kvm is disabled
 
 When the user sets "-cpu host,-kvm" (expose_kvm=false), also clear the
-CPUID[1].ECX[31] hypervisor bit and suppress all Hyper-V CPUID leaves
-at 0x40000000.
+CPUID[1].ECX[31] hypervisor bit, CPUID[1].ECX[30] (RDRAND) secondary
+detection bit, and suppress all Hyper-V CPUID leaves at 0x40000000.
 
 The original code only cleared FEAT_KVM; the hypervisor bit in FEAT_1_ECX
 was left set from the unconditional set in x86_cpu_load_model() or from
@@ -28,24 +28,28 @@ returns false, hyperv_init_vcpu() is never called, and kvm_put_msrs()
 skips all Hyper-V MSRs.
 
 ---
- target/i386/cpu.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ target/i386/cpu.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/target/i386/cpu.c b/target/i386/cpu.c
 index abcdef1..1234567 100644
 --- a/target/i386/cpu.c
 +++ b/target/i386/cpu.c
-@@ -9613,6 +9613,17 @@
+@@ -9613,6 +9613,18 @@
  
      if (!kvm_enabled() || !cpu->expose_kvm) {
          env->features[FEAT_KVM] = 0;
-+        env->features[FEAT_1_ECX] &= ~CPUID_EXT_HYPERVISOR;
++        env->features[FEAT_1_ECX] &= ~(CPUID_EXT_HYPERVISOR | CPUID_EXT_RDRAND);
 +
 +        /*
 +         * Clear all Hyper-V feature bits so that hyperv_enabled() returns
 +         * false, preventing hyperv_init_vcpu() from being called and,
 +         * most importantly, preventing kvm_put_msrs() from adding Hyper-V
 +         * MSRs (e.g. HV_X64_MSR_SVERSION = 0x40000081) to the KVM MSR set.
++         *
++         * Also clear CPUID[1].ECX[30] (RDRAND).  While this is a legitimate
++         * CPU feature on bare metal, some anti-VM detection tools interpret
++         * this bit as a secondary hypervisor indicator.
 +         */
 +        cpu->hyperv_features = 0;
 +        cpu->hyperv_passthrough = false;
