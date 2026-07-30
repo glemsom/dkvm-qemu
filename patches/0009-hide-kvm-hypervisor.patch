@@ -3,22 +3,22 @@ Date: 2025
 Subject: [PATCH] target/i386: Hide KVM hypervisor presence when expose_kvm is disabled
 
 When the user sets "-cpu host,-kvm" (expose_kvm=false), also clear the
-CPUID[1].ECX[31] hypervisor bit.  The existing guard only cleared
-FEAT_KVM; the hypervisor bit in FEAT_1_ECX was left set from the
-unconditional set in x86_cpu_load_model() or from the host passthrough
-feature expansion.
+CPUID[1].ECX[31] hypervisor bit and suppress all Hyper-V CPUID leaves
+at 0x40000000.
 
-Without this patch, even with "-cpu host,-kvm", CPUID[1].ECX[31] can
-still advertise the hypervisor bit.
+The original code only cleared FEAT_KVM; the hypervisor bit in FEAT_1_ECX
+was left set from the unconditional set in x86_cpu_load_model() or from
+the host passthrough feature expansion.  Additionally, if hv-* flags were
+enabled, hyperv_fill_cpuids() would still populate the 0x40000000 Hyper-V
+CPUID leaves with the configured hv-vendor-id.
 
-Note: Hyper-V CPUID leaves at 0x40000000 are NOT affected by this
-patch.  If the user enables hv-* flags, those leaves will still be
-present.  To hide them, remove hv-* flags or also disable them in
-the CPU model string.
+Without this patch, even with "-cpu host,-kvm,-hypervisor" and hv-* flags,
+the 0x40000000 leaf range can still be discovered by the guest.
 
 ---
- target/i386/cpu.c | 1 +
- 1 file changed, 1 insertion(+)
+ target/i386/cpu.c    | 1 +
+ target/i386/kvm/kvm.c | 8 ++++++++
+ 2 files changed, 9 insertions(+)
 
 diff --git a/target/i386/cpu.c b/target/i386/cpu.c
 index abcdef1..1234567 100644
@@ -32,5 +32,26 @@ index abcdef1..1234567 100644
      }
  
      /*
+diff --git a/target/i386/kvm/kvm.c b/target/i386/kvm/kvm.c
+index abcdef2..2345678 100644
+--- a/target/i386/kvm/kvm.c
++++ b/target/i386/kvm/kvm.c
+@@ -2290,7 +2290,15 @@ int kvm_arch_init_vcpu(CPUState *cs)
+         return -ENOSYS;
+     }
+
+-    if (hyperv_enabled(cpu)) {
++    /*
++     * When expose_kvm is disabled, suppress all Hyper-V CPUID leaves
++     * (0x40000000 range) to fully hide the hypervisor presence.  Even
++     * if hv-* flags are set, do not populate the 0x40000000 leaves
++     * as they would reveal a hypervisor vendor ID (e.g. "dkvm") to the
++     * guest.
++     */
++    if (hyperv_enabled(cpu) &&
++        kvm_enabled() && cpu->expose_kvm) {
+         r = hyperv_init_vcpu(cpu);
+         if (r) {
+             return r;
 -- 
 2.43.0
