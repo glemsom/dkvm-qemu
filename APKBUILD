@@ -3,7 +3,7 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=qemu
-pkgver=11.0.1
+pkgver=11.0.2
 pkgrel=0
 pkgdesc="QEMU is a generic machine emulator and virtualizer"
 url="https://qemu.org/"
@@ -653,7 +653,7 @@ _edk2_vars() {
 
 
 sha512sums="
-50fdc0bef3b179d8858ea07656244257b46475ec8bcd8b5a428f8dec3cae7f4a6ba8ba621a0a965ddacae314890191a3a9c58e16752bd3bf0ef78aaf6aa659eb  qemu-11.0.1.tar.xz
+23d64d05381eaefc8894bb0ece2213d068594b42600931c4b32eb7a5c851e0539977449fb0f9940f58af6489bb15aa2dc8f27472e4fa2d7de8983232136eed00  qemu-11.0.2.tar.xz
 00097153612d107053599c665c7468b8aedcbc28322c21289156659827059b10448fea7d1527101418670023db469b6d26dc9eb1b247f4f86520ec192394ae0e  0001-CPUID.patch
 5581f290c65be3bf5c84b3f151d66cf8fc2b129753db212d8c7c85bf6ea96fcb9a7423f627aace2a16287770d92dbaa75dfa29572f462c38c27c92e3179b05d8  0002-x-force-cpuid.patch
 1c91f2cbf45685425a0d79dd435f205fb0239b7a4f464ad21213f794838619a666247410ac298f3e27d7678169cd4f767a3ffdedd239e41184d4ae597e16ef4a  0003-epyc-vcpu.patch

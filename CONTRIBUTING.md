@@ -17,7 +17,7 @@ patches/NNNN-description.patch
 
 ```bash
 # 1. Make changes in the QEMU source tree
-cd /path/to/qemu-11.0.1
+cd /path/to/qemu-11.0.2
 # ... edit files ...
 
 # 2. Generate patch from the qemu root
@@ -29,7 +29,7 @@ git diff --no-color > ../dkvm-qemu/patches/0009-my-feature.patch
 
 ### Patch requirements
 
-- Must apply cleanly to QEMU **11.0.1**
+- Must apply cleanly to QEMU **11.0.2**
 - Must not introduce `-Werror` warnings (build uses `--disable-werror` but patches should be clean)
 - Must be a unified diff (`git diff` or `diff -u`)
 - Header comment describing purpose (preferred, not required for trivial patches)

@@ -91,7 +91,7 @@ qemu-system-x86_64 --version
 
 Expected output (version may vary slightly):
 ```
-QEMU emulator version 11.0.1
+QEMU emulator version 11.0.2
 Copyright (c) 2003-2025 Fabrice Bellard and the QEMU Project developers
 ```
 

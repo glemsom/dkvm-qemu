@@ -24,7 +24,7 @@ The dev build compiles QEMU inside a Docker container, applies all patches, and 
 
 This will:
 
-1. Build the `qemu-dev-builder` Docker image (Alpine 3.24 + build deps + QEMU 11.0.1 source)
+1. Build the `qemu-dev-builder` Docker image (Alpine 3.24 + build deps + QEMU 11.0.2 source)
 2. Apply all patches from `patches/`
 3. Compile `x86_64-softmmu` target with KVM
 4. Copy the binary to `build/out/qemu-system-x86_64`
@@ -127,7 +127,7 @@ cpuid -1 | grep -A 10 "L3"
 
 **Fix:**
 
-1. Verify the patches target QEMU 11.0.1:
+1. Verify the patches target QEMU 11.0.2:
 
    ```bash
    head -20 patches/series
@@ -137,7 +137,7 @@ cpuid -1 | grep -A 10 "L3"
 
    ```bash
    git describe --tags
-   # Expected: something based on qemu-11.0.1
+   # Expected: something based on qemu-11.0.2
    ```
 
 3. Regenerate the Docker build image so it fetches a fresh QEMU source:

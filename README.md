@@ -7,7 +7,7 @@
 > - [Getting Started](docs/tutorial/getting-started.md) — build from source
 > - [Install via APK](docs/tutorial/install-via-apk.md) — pre-built packages
 
-Custom QEMU (11.0.1) build with patches for AMD EPYC/Ryzen virtualization
+Custom QEMU (11.0.2) build with patches for AMD EPYC/Ryzen virtualization
 — die-topology CPUID, bus-lock detection, and **per-die asymmetric L3 cache**
 support (simulate Ryzen 9950X3D in VMs).
 

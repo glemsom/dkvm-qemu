@@ -18,7 +18,7 @@ RUN apk update && apk add --no-cache \
     && rm -rf /var/cache/apk/*
 
 # Download QEMU source
-ARG QEMU_VERSION=11.0.1
+ARG QEMU_VERSION=11.0.2
 RUN wget -q https://download.qemu.org/qemu-$QEMU_VERSION.tar.xz -O /tmp/qemu.tar.xz \
     && mkdir -p /build/qemu \
     && tar xf /tmp/qemu.tar.xz -C /build/qemu --strip-components=1 \
