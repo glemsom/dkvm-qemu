@@ -28,14 +28,14 @@ returns false, hyperv_init_vcpu() is never called, and kvm_put_msrs()
 skips all Hyper-V MSRs.
 
 ---
- target/i386/cpu.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ target/i386/cpu.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/target/i386/cpu.c b/target/i386/cpu.c
 index abcdef1..1234567 100644
 --- a/target/i386/cpu.c
 +++ b/target/i386/cpu.c
-@@ -9613,6 +9613,18 @@
+@@ -9613,6 +9613,21 @@
  
      if (!kvm_enabled() || !cpu->expose_kvm) {
          env->features[FEAT_KVM] = 0;
